@@ -27,7 +27,9 @@ if [ ! -d "$SCRIPTPATH/../$outDir" ];then
 	echo You must build first
 else
 	cd $SCRIPTPATH/../$outDir
-	ln --symbolic --force "../res/" res
+# no-dereference so that the existing res link isn't followed,
+# creating another link within the res directory
+	ln --symbolic --force --no-dereference "../res/" res
 	echo -----------------------------------------
 	java Main
 fi
