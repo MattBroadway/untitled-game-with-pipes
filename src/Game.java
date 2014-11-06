@@ -6,7 +6,7 @@ public class Game
 
 	public Game()
 	{
-		tiles = new LogicalTiles();
+		tiles = new LogicalTiles(6, 6);
 	}
 
 	/** update the state of the game (1 unit of time has passed)

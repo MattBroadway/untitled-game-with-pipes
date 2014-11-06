@@ -27,6 +27,7 @@ if [ ! -d "$SCRIPTPATH/../$outDir" ];then
 	echo You must build first
 else
 	cd $SCRIPTPATH/../$outDir
+	ln --symbolic --force "../res/" res
 	echo -----------------------------------------
 	java Main
 fi

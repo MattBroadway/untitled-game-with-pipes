@@ -7,6 +7,7 @@ public class TilesRenderer extends JPanel
 {
 	private LogicalTiles logicalTiles;
 	private int tileSize;
+	private Image[] tileImages;
 	
 
 	public TilesRenderer(LogicalTiles setLogicalTiles, int setTileSize)
@@ -16,6 +17,10 @@ public class TilesRenderer extends JPanel
 		
 		logicalTiles = setLogicalTiles;
 		tileSize = setTileSize;
+
+		int imageCount = 1/*all*/ + 2/*straight*/ + 4/*adjacent*/;
+		tileImages = new Image[imageCount];
+		tileImages[0] = new Image("res/adjacent-empty.jpg");
 
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(640, 480));
@@ -32,6 +37,7 @@ public class TilesRenderer extends JPanel
 		
 		g2.setColor(Color.RED);
 		g2.fill(box);
+		g2.drawImage(tileImages[0].getImage(), 200, 200, null);
 	}
 
 	/** draw a single tile
