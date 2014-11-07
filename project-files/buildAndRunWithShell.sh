@@ -11,7 +11,7 @@ if [ "$1" = "-b" ]; then
 	cd $SCRIPTPATH/../
 	mkdir $outDir 2> /dev/null
 	cd src
-	javac *.java -d ../$outDir/ 2> ../$outDir/lastBuild.log
+	javac *.java -classpath $SCRIPTPATH/../lib/out/ -d ../$outDir/ 2> ../$outDir/lastBuild.log
 
 	if [[ $? != 0 ]];then
 		less ../$outDir/lastBuild.log

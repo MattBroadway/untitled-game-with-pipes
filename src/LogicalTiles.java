@@ -1,3 +1,5 @@
+import org.json.*;
+
 /** manages the logical state of the tiles and provides an interface with manipulating them
 */
 public class LogicalTiles
@@ -42,6 +44,13 @@ public class LogicalTiles
 		rows = setRows;
 		cols = setCols;
 		tiles = new Tile[rows][cols];
+	}
+
+	public void loadTilesFromJSON(String JSON)
+	{
+		JSONObject o = new JSONObject(JSON);
+		JSONArray tileArray = o.getJSONArray("tiles");
+
 	}
 	
 
