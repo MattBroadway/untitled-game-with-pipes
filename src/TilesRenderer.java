@@ -6,17 +6,18 @@ import java.util.HashMap;
 */
 public class TilesRenderer extends JPanel
 {
-	private LogicalTiles logicalTiles;
+	private Game game;
 	private int tileSize;
+	public int top;
+	public int left;
 	private HashMap<Tile, Image> tileImages;
 	
 
-	public TilesRenderer(LogicalTiles setLogicalTiles, int setTileSize)
+	public TilesRenderer(Game game, int setTileSize)
 	{
 		super(true/*isDoubleBuffered*/);
 
-		
-		logicalTiles = setLogicalTiles;
+		this.game = game;
 		tileSize = setTileSize;
 
 		tileImages = new HashMap<Tile, Image>();
@@ -43,14 +44,35 @@ public class TilesRenderer extends JPanel
 
 
 		setBackground(Color.WHITE);
-		setPreferredSize(new Dimension(640, 480));
 		setDoubleBuffered(true);
 	}
+
+	public void setPos(int setTop, int setLeft)
+	{
+		top = setTop;
+		left = setLeft;
+	}
+
+	/** call after changing the size of the logical tiles grid
+	*/
+	public void refreshGeometry()
+	{
+		setPreferredSize(new Dimension(
+			game.tiles.getRows()*tileSize,
+			game.tiles.getCols()*tileSize));
+	}
+
+	public int getTileSize() { return tileSize; }
 
 	/** draw the tiles
 	*/
 	public void paintComponent(Graphics g)
 	{
+		LogicalTiles logicalTiles = game.tiles;
+
+		// may be the case before a level is loaded
+		if(logicalTiles == null) { return; }
+
 		Graphics2D g2 = (Graphics2D)g;
 		
 		for(int row = 0; row < logicalTiles.tiles.length; row++)
@@ -68,11 +90,11 @@ public class TilesRenderer extends JPanel
 	*/
 	private void drawTile(int tileRow, int tileCol, Graphics2D g2)
 	{
-		Tile t = logicalTiles.tiles[tileRow][tileCol];
+		Tile t = game.tiles.tiles[tileRow][tileCol];
 		Image i = tileImages.get(t);
 		
-		int x = tileCol * tileSize;
-		int y = tileRow * tileSize;
+		int x = left + tileCol * tileSize;
+		int y = top + tileRow * tileSize;
 
 		g2.drawImage(i.getImage(), x, y, null);
 	}

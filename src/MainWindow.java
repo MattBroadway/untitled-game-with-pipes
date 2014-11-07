@@ -8,11 +8,8 @@ public class MainWindow extends JFrame
 {
 	/** manages the rendering of the tiles
 	*/
-	private TilesRenderer tiles;
-
-
-	/** manages the logical state of the game
-	*/
+	public TilesRenderer tiles;
+	private Scheduler sc;
 	private Game game;
 
 
@@ -48,10 +45,13 @@ public class MainWindow extends JFrame
 
 	/** initialise the window
 	@param setTitleString set the window's title
+	@param Game the game object to render
 	*/
-	public MainWindow(String setTitleString)
+	public MainWindow(Game game, String setTitleString, int FPS)
 	{
 		super();
+		
+		this.game = game;
 
 		setTitle(setTitleString);
 		setSize(640, 480);
@@ -61,6 +61,11 @@ public class MainWindow extends JFrame
 
 		setupScene();
 
+		// repaints the window based on a timer
+		sc = new Scheduler(FPS, this);
+		sc.start();
+
+
 		setVisible(true);
 	}
 
@@ -68,9 +73,7 @@ public class MainWindow extends JFrame
 	*/
 	public void setupScene()
 	{
-		game = new Game();
-
-		tiles = new TilesRenderer(game.tiles, 64/*tileSize*/);
+		tiles = new TilesRenderer(game, 64/*tileSize*/);
 
 		add(tiles);
 	}

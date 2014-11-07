@@ -12,12 +12,10 @@ public class Main
 		EventQueue.invokeLater(new Runnable() {
 			public void run()
 			{
-				System.out.println("Creating window");
-				MainWindow w = new MainWindow("Pipes Game");
+				System.out.println("starting game...");
+				Game game = new Game();
 
-				// repaints the window based on a timer
-				MainWindow.Scheduler sc = new MainWindow.Scheduler(30/*FPS*/, w);
-				sc.start();
+				game.start();
 			}
 		});
 

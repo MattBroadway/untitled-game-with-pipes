@@ -135,6 +135,8 @@ public class LogicalTiles
 		return val;
 	}
 	
+	public int getRows() { return rows; }
+	public int getCols() { return cols; }
 
 	/** get the paths from the top row
 	*/
