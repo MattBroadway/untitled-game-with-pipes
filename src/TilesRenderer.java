@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 /** manages the rendering of a grid of tiles
 */
@@ -7,7 +8,7 @@ public class TilesRenderer extends JPanel
 {
 	private LogicalTiles logicalTiles;
 	private int tileSize;
-	private Image[] tileImages;
+	private HashMap<Tile, Image> tileImages;
 	
 
 	public TilesRenderer(LogicalTiles setLogicalTiles, int setTileSize)
@@ -18,9 +19,16 @@ public class TilesRenderer extends JPanel
 		logicalTiles = setLogicalTiles;
 		tileSize = setTileSize;
 
-		int imageCount = 1/*all*/ + 2/*straight*/ + 4/*adjacent*/;
-		tileImages = new Image[imageCount];
-		tileImages[0] = new Image("res/adjacent-empty.jpg");
+		tileImages = new HashMap<Tile, Image>();
+
+		Image currentImage = new Image("res/adjacent-empty.jpg");
+		tileImages.put(new Tile(false, true, true, false), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		tileImages.put(new Tile(false, false, true, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		tileImages.put(new Tile(true, false, false, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		tileImages.put(new Tile(true, true, false, false), currentImage);
 
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(640, 480));
@@ -33,17 +41,27 @@ public class TilesRenderer extends JPanel
 	{
 		Graphics2D g2 = (Graphics2D)g;
 		
-		Rectangle box = new Rectangle(100, 100, 200, 100);
+		for(int row = 0; row < logicalTiles.tiles.length; row++)
+		{
+			int cols = logicalTiles.tiles[0].length;
+			for(int col = 0; col < cols; col++)
+			{
+				drawTile(row, col, g2);
+			}
+		}
 		
-		g2.setColor(Color.RED);
-		g2.fill(box);
-		g2.drawImage(tileImages[0].getImage(), 200, 200, null);
 	}
 
 	/** draw a single tile
 	*/
-	private void drawTile(int tileRow, int tileCol)
+	private void drawTile(int tileRow, int tileCol, Graphics2D g2)
 	{
+		Tile t = logicalTiles.tiles[tileRow][tileCol];
+		Image i = tileImages.get(t);
 		
+		int x = tileCol * tileSize;
+		int y = tileRow * tileSize;
+
+		g2.drawImage(i.getImage(), x, y, null);
 	}
 }

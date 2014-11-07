@@ -2,45 +2,7 @@
 */
 public class LogicalTiles
 {
-	public class Tile
-	{
-		public boolean top, right, bottom, left;
-
-		Tile(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft)
-		{
-			set(setTop, setRight, setBottom, setLeft);
-		}
-		public void set(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft)
-		{
-			top = setTop;
-			right = setRight;
-			bottom = setBottom;
-			left = setLeft;
-		}
-		/** rotate the tile clockwise 90 degrees
-		*/
-		public void rotateCW()
-		{
-			boolean oldTop = top;
-
-			top = left;
-			left = bottom;
-			bottom = right;
-			right = oldTop;
-		}
-		/** rotate the tile anti-clockwise 90 degrees
-		*/
-		public void rotateACW()
-		{
-			boolean oldTop = top;
-
-			top = right;
-			right = bottom;
-			bottom = left;
-			left = oldTop;
-		}
-	}
-
+	
 	/** a path of tiles that are joined
 	*/
 	public class Path
@@ -67,7 +29,7 @@ public class LogicalTiles
 		}
 	}
 
-	/** A matrix representation of a graph representation of the tiles
+	/** 2D array of tiles
 		row major (access like so: tiles[row][col])
 	*/
 	public Tile[][] tiles;
@@ -80,9 +42,6 @@ public class LogicalTiles
 		rows = setRows;
 		cols = setCols;
 		tiles = new Tile[rows][cols];
-
-		
-		
 	}
 	
 

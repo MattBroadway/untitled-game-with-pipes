@@ -19,15 +19,19 @@ public class Image
 			System.out.println("Failed to load image: " + filename);
 		}
 	}
+	public Image(BufferedImage i)
+	{
+		data = i;
+	}
 	public BufferedImage getImage() { return data; }
 	/** get a copy of the image rotated 90 degrees clockwise
 	*/
-	public BufferedImage getRotatedCopy() 
+	public Image getRotatedCopy() 
 	{
 		AffineTransform trans = new AffineTransform();
 		trans.rotate(Math.PI/2, data.getWidth() / 2, data.getHeight() / 2);
 
 		AffineTransformOp op = new AffineTransformOp(trans, AffineTransformOp.TYPE_BILINEAR);
-		return op.filter(data, null);
+		return new Image(op.filter(data, null));
 	}
 }
