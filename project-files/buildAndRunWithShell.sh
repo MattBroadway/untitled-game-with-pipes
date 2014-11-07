@@ -31,6 +31,6 @@ else
 # creating another link within the res directory
 	ln --symbolic --force --no-dereference "../res/" res
 	echo -----------------------------------------
-	java Main
+	java -classpath "./:$SCRIPTPATH/../lib/out/" Main
 fi
 

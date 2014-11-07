@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import org.json.*;
 
 /** manages the logical state of the tiles and provides an interface with manipulating them
@@ -45,12 +47,92 @@ public class LogicalTiles
 		cols = setCols;
 		tiles = new Tile[rows][cols];
 	}
-
-	public void loadTilesFromJSON(String JSON)
+	public LogicalTiles(String JSONFile)
 	{
+		BufferedReader reader = null;
+ 
+		String JSONString = "";
+		try
+		{
+			String line;
+ 
+			reader = new BufferedReader(new FileReader(JSONFile));
+ 
+			while((line = reader.readLine()) != null)
+			{
+				JSONString += line;
+			}
+ 
+		}
+		catch(java.io.IOException e)
+		{
+			System.out.println("Failed to load level: " + JSONFile);
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				if(reader != null)
+				{
+					reader.close();
+				}
+			}
+			catch(java.io.IOException e)
+			{
+				System.out.println("Failed to load level: " + JSONFile);
+				e.printStackTrace();
+			}
+		}
+		
+		loadTilesFromJSONString(JSONString);
+	}
+
+	public void loadTilesFromJSONString(String JSON)
+	{
+
 		JSONObject o = new JSONObject(JSON);
 		JSONArray tileArray = o.getJSONArray("tiles");
+		rows = tileArray.length();
+		cols = tileArray.getJSONArray(0).length();
 
+		tiles = new Tile[rows][cols];
+
+		for(int row = 0; row < rows; row++)
+		{
+			JSONArray tileRow = tileArray.getJSONArray(row);
+			for(int col = 0; col < cols; col++)
+			{
+				JSONArray tileEntry = tileRow.getJSONArray(col);
+				
+				tiles[row][col] = new Tile(
+					readBoolFrom(tileEntry, 0),
+					readBoolFrom(tileEntry, 1),
+					readBoolFrom(tileEntry, 2),
+					readBoolFrom(tileEntry, 3)
+				);
+			}
+
+
+
+		}
+		
+	}
+	public boolean readBoolFrom(JSONArray arr, int index)
+	{
+		boolean val = false;
+
+		int valAsInt = arr.optInt(index, -1);
+		if(valAsInt != -1) // -1 if not convertible to int
+		{
+			val = (valAsInt == 1); // might want to check if not one of: {0,1}
+		}
+		else
+		{
+			val = arr.getBoolean(index); // throws exception if not boolean
+		}
+
+		return val;
 	}
 	
 

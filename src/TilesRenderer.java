@@ -21,7 +21,8 @@ public class TilesRenderer extends JPanel
 
 		tileImages = new HashMap<Tile, Image>();
 
-		Image currentImage = new Image("res/adjacent-empty.jpg");
+		// right angle pipes
+		Image currentImage = new Image("res/right-angle-empty.jpg");
 		tileImages.put(new Tile(false, true, true, false), currentImage);
 		currentImage = currentImage.getRotatedCopy();
 		tileImages.put(new Tile(false, false, true, true), currentImage);
@@ -29,6 +30,17 @@ public class TilesRenderer extends JPanel
 		tileImages.put(new Tile(true, false, false, true), currentImage);
 		currentImage = currentImage.getRotatedCopy();
 		tileImages.put(new Tile(true, true, false, false), currentImage);
+
+		// straight pipes
+		currentImage = new Image("res/straight-empty.jpg");
+		tileImages.put(new Tile(true, false, true, false), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		tileImages.put(new Tile(false, true, false, true), currentImage);
+
+		// cross pipe
+		currentImage = new Image("res/cross-empty.jpg");
+		tileImages.put(new Tile(true, true, true, true), currentImage);
+
 
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(640, 480));

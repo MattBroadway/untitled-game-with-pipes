@@ -36,24 +36,20 @@ public class Tile
 	{
 		if(this == other)
 		{
-			System.out.println("(this == other)");
 			return true;
 		}
 		if(other == null)
 		{
-			System.out.println("(other == null)");
 			return false;
 		}
 		if(getClass() != other.getClass())
 		{
-			System.out.println("(getClass() != other.getClass())");
 			return false;
 		}
 
 		Tile otherTile = (Tile)other;
 		if(hashCode() != otherTile.hashCode())
 		{
-			System.out.println("(hashCode() != other.hashCode())");
 			return false;
 		}
 		return true;
