@@ -9,7 +9,11 @@ public class MainWindow extends JFrame
 	/** manages the rendering of the tiles
 	*/
 	public TilesRenderer tiles;
+	/** manages the frame rate and general timing of the game
+	*/
 	private Scheduler sc;
+	/** stores global state about the game
+	*/
 	private Game game;
 
 

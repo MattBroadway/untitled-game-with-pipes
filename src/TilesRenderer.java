@@ -6,13 +6,29 @@ import java.util.HashMap;
 */
 public class TilesRenderer extends JPanel
 {
+	/** renderers need access to the global game state to update from the logical representation
+	*/
 	private Game game;
+	/** the size of the tile images
+	 * TODO: (currently no checking is in place to enforce)
+	*/
 	private int tileSize;
+	/** the top of the tile grid
+	*/
 	public int top;
+	/** the left of the tile grid
+	*/
 	public int left;
+	/** a mapping of logical tiles -&gt; images
+	 * used to dynamically choose appropriate images for logical tiles
+	*/
 	private HashMap<Tile, Image> tileImages;
 	
 
+	/** initialise a TilesRenderer for a game object
+	 * @param game the game object to create the renderer for
+	 * @param setTileSize the size (width and height) of a single tile in pixels
+	 */
 	public TilesRenderer(Game game, int setTileSize)
 	{
 		super(true/*isDoubleBuffered*/);
@@ -47,6 +63,10 @@ public class TilesRenderer extends JPanel
 		setDoubleBuffered(true);
 	}
 
+	/** set the rendering position of the tiles grid
+	 * @param setTop the new top of the tiles grid
+	 * @param setLeft the new left of the tiles grid
+	 */
 	public void setPos(int setTop, int setLeft)
 	{
 		top = setTop;
@@ -86,7 +106,7 @@ public class TilesRenderer extends JPanel
 		
 	}
 
-	/** draw a single tile
+	/** draw a single tile (the row and col refer to the tile's position in the logicalTiles object
 	*/
 	private void drawTile(int tileRow, int tileCol, Graphics2D g2)
 	{

@@ -1,9 +1,15 @@
 import java.awt.event.*;
 
+/** class that listens for mouse events over the area of a tiles grid and reports which tiles are clicked
+*/
 public class TilesInputListener implements MouseListener
 {
+	/** needs access to the global state
+	*/
 	private Game game;
 
+	/** initialise the listener for a game object
+	*/
 	public TilesInputListener(Game game)
 	{
 		this.game = game;
@@ -11,6 +17,8 @@ public class TilesInputListener implements MouseListener
 	}
 
 	
+	/** This event is fired when the mouse is clicked. It reports the event to the game object to handle
+	*/
 	public void mouseClicked(MouseEvent e)
 	{
 		int row = yCoordToRow(e.getY());
@@ -27,6 +35,8 @@ public class TilesInputListener implements MouseListener
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 
+	/** convert x coordinate (pixels) to a column in the logicalTiles object
+	*/
 	public int xCoordToCol(int x)
 	{
 		int left = game.w.tiles.left;
@@ -44,6 +54,8 @@ public class TilesInputListener implements MouseListener
 			return naiveCol;
 		}
 	}
+	/** convert y coordinate (pixels) to a row in the logicalTiles object
+	*/
 	public int yCoordToRow(int y)
 	{
 		int top = game.w.tiles.top;

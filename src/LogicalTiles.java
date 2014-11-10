@@ -41,32 +41,44 @@ public class LogicalTiles
 	private int cols;
 
 
+	/** initialise logicalTiles given the number of rows and columns in the grid
+	*/
 	public LogicalTiles(int setRows, int setCols)
 	{
 		rows = setRows;
 		cols = setCols;
 		tiles = new Tile[rows][cols];
 	}
+	/** initialise logicalTiles from a JSON level file
+	 * reads the 'tiles' attribute in the JSON object
+	*/
 	public LogicalTiles(String JSONFile)
+	{
+		loadTilesFromJSONFile(JSONFile);
+	}
+
+	/** helper function to load files
+	*/
+	private static String readFileToString(String filename)
 	{
 		BufferedReader reader = null;
  
-		String JSONString = "";
+		String fileContents = "";
 		try
 		{
 			String line;
  
-			reader = new BufferedReader(new FileReader(JSONFile));
+			reader = new BufferedReader(new FileReader(filename));
  
 			while((line = reader.readLine()) != null)
 			{
-				JSONString += line;
+				fileContents += line;
 			}
  
 		}
 		catch(java.io.IOException e)
 		{
-			System.out.println("Failed to load level: " + JSONFile);
+			System.out.println("Failed to load level: " + filename);
 			e.printStackTrace();
 		}
 		finally
@@ -80,14 +92,25 @@ public class LogicalTiles
 			}
 			catch(java.io.IOException e)
 			{
-				System.out.println("Failed to load level: " + JSONFile);
+				System.out.println("Failed to load level: " + filename);
 				e.printStackTrace();
 			}
 		}
-		
-		loadTilesFromJSONString(JSONString);
+
+		return fileContents;
+
 	}
 
+	/** initialise logicalTiles from a JSON level file
+	 * reads the 'tiles' attribute in the JSON object
+	*/
+	public void loadTilesFromJSONFile(String filename)
+	{
+		loadTilesFromJSONString(readFileToString(JSONFile));
+	}
+	/** initialise logicalTiles from a JSON level string
+	 * reads the 'tiles' attribute in the JSON object
+	*/
 	public void loadTilesFromJSONString(String JSON)
 	{
 
@@ -118,6 +141,11 @@ public class LogicalTiles
 		}
 		
 	}
+	/** read a boolean attribute from a JSON array
+	 * if an integer is found then it counts 0 to be false and everything else true
+	 * @param arr the array to load from (eg of the form: [1,1,0,0] or [true,true,false,false])
+	 * @param index the item from the array to load (zero indexed)
+	 */
 	public boolean readBoolFrom(JSONArray arr, int index)
 	{
 		boolean val = false;
@@ -125,7 +153,7 @@ public class LogicalTiles
 		int valAsInt = arr.optInt(index, -1);
 		if(valAsInt != -1) // -1 if not convertible to int
 		{
-			val = (valAsInt == 1); // might want to check if not one of: {0,1}
+			val = (valAsInt != 0); // might want to check if not one of: {0,1}
 		}
 		else
 		{
@@ -139,7 +167,7 @@ public class LogicalTiles
 	public int getCols() { return cols; }
 
 	/** get the paths from the top row
-	*/
+	 */
 	public Path[] getPathsFrom(int col)
 	{
 		// use some search algorithm to traverse until all the paths out
