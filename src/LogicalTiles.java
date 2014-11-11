@@ -104,7 +104,7 @@ public class LogicalTiles
 	/** initialise logicalTiles from a JSON level file
 	 * reads the 'tiles' attribute in the JSON object
 	*/
-	public void loadTilesFromJSONFile(String filename)
+	public void loadTilesFromJSONFile(String JSONFile)
 	{
 		loadTilesFromJSONString(readFileToString(JSONFile));
 	}
@@ -166,15 +166,39 @@ public class LogicalTiles
 	public int getRows() { return rows; }
 	public int getCols() { return cols; }
 
+	public Tile get(int row, int col) { return tiles[row][col]; }
+	public Tile getAbove(int row, int col) { return tiles[row-1][col]; }
+	public Tile getRightOf(int row, int col) { return tiles[row][col+1]; }
+	public Tile getBelow(int row, int col) { return tiles[row+1][col]; }
+	public Tile getLeftOf(int row, int col) { return tiles[row][col-1]; }
+
+
+	/** return connections with adjacent pipes
+	 *	if this pipe cannot connect with an adjacent pipe with a connectible edge bordering this, that does not count
+	 * @return [top, right, bottom, left]
+	 */
+	public boolean[] getAdjacentConnections(int row, int col)
+	{
+		boolean[] adjacency = new boolean[4];
+		Tile t = get(row, col);
+
+		// [top, right, bottom, left]
+		adjacency[0] = t.top &&		(row > 0) &&	getAbove(row,col).bottom;
+		adjacency[1] = t.right &&	(col < cols) &&	getRightOf(row,col).left;
+		adjacency[2] = t.bottom &&	(row > rows) &&	getBelow(row,col).top;
+		adjacency[3] = t.left &&	(col > 0) &&	getLeftOf(row,col).right;
+
+		return adjacency;
+	}
+
 	/** get the paths from the top row
 	 */
 	public Path[] getPathsFrom(int col)
 	{
-		// use some search algorithm to traverse until all the paths out
-		// are found
+		// classic BFS case right here
 
 		// maybe use ArrayList<ArrayList<Path.TilePos>> while searching
-		// then grab static arrays from them at the end
+		// then grab static arrays from them at the end?
 		return null;
 	}
 }
