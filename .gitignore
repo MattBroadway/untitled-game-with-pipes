@@ -6,3 +6,5 @@
 out/
 lib/
 jdoc/
+
+/project-files/netbeans/*
