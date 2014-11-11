@@ -1,4 +1,5 @@
 import java.awt.event.*;
+import javax.swing.SwingUtilities;
 
 /** class that listens for mouse events over the area of a tiles grid and reports which tiles are clicked
 */
@@ -21,12 +22,13 @@ public class TilesInputListener implements MouseListener
 	*/
 	public void mouseClicked(MouseEvent e)
 	{
+		boolean leftClick = SwingUtilities.isLeftMouseButton(e);
 		int row = yCoordToRow(e.getY());
 		int col = xCoordToCol(e.getX());
 		if(row != -1 && col != -1)
 		{
 			System.out.println("tile: [row:"+row+" col:"+col+"] clicked");
-			game.handleTileClicked(row, col);
+			game.handleTileClicked(row, col, leftClick);
 		}
 
 	}
