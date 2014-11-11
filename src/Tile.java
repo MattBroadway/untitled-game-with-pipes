@@ -5,6 +5,9 @@ public class Tile
 	/** these attributes refer to the edges of the tile which are 'connectible'
 	*/
 	public boolean top, right, bottom, left;
+	/** whether there is a path from the current tile to the top row (where the air is coming from)
+	*/
+	public boolean active;
 
 	/** initialise a tile by passing booleans
 	*/

@@ -35,14 +35,13 @@ public class Game
 	{
 		tiles = new LogicalTiles(levelFiles[level]);
 		tilesInput = new TilesInputListener(this);
-		w.tiles.refreshGeometry();
+		w.tiles.refreshGeometry(); // sets the total grid size calculated from the loaded level
 	}
 
 	/** update the state of the game (1 unit of time has passed)
 	*/
 	public void tick()
 	{
-		System.out.println(tiles.pathExists(2));
 	}
 
 	/** handle a mouse click action (as reported by the TilesInputListener)
@@ -50,6 +49,7 @@ public class Game
 	public void handleTileClicked(int row, int col)
 	{
 		tiles.tiles[row][col].rotateCW();
+		tiles.updateActiveTiles();
 	}
 }
 
