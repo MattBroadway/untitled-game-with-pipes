@@ -42,7 +42,7 @@ public class Game
 	*/
 	public void tick()
 	{
-		System.out.println(tiles.pathExists(2));
+		// Game logic goes here
 	}
 
 	/** handle a mouse click action (as reported by the TilesInputListener)

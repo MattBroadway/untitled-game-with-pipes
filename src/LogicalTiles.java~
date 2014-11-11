@@ -207,7 +207,7 @@ public class LogicalTiles
 	*/
 	public boolean pathExists(int col)
 	{
-		Tile tile = this.tiles[this.rows][col];
+		Tile tile = tile[this.rows][col];
 		if(tile.bottom)
 		{
 			return pathExistsPart2(this.rows,col);
