@@ -48,15 +48,12 @@ public class Game
 	 */
 	public void handleTileClicked(int row, int col, boolean leftClick)
 	{
-<<<<<<< HEAD
 		if(leftClick)
 			tiles.tiles[row][col].rotateCW();
 		else
 			tiles.tiles[row][col].rotateACW();
-=======
-		tiles.tiles[row][col].rotateCW();
+
 		tiles.updateActiveTiles();
->>>>>>> 65bf24f618d9a2bfc9ddfc866be0397bb9c125cd
 	}
 }
 
