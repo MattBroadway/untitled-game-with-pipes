@@ -35,24 +35,28 @@ public class Game
 	{
 		tiles = new LogicalTiles(levelFiles[level]);
 		tilesInput = new TilesInputListener(this);
-		w.tiles.refreshGeometry();
+		w.tiles.refreshGeometry(); // sets the total grid size calculated from the loaded level
 	}
 
 	/** update the state of the game (1 unit of time has passed)
 	*/
 	public void tick()
 	{
-		// Game logic goes here
 	}
 
 	/** handle a mouse click action (as reported by the TilesInputListener)
 	 */
 	public void handleTileClicked(int row, int col, boolean leftClick)
 	{
+<<<<<<< HEAD
 		if(leftClick)
 			tiles.tiles[row][col].rotateCW();
 		else
 			tiles.tiles[row][col].rotateACW();
+=======
+		tiles.tiles[row][col].rotateCW();
+		tiles.updateActiveTiles();
+>>>>>>> 65bf24f618d9a2bfc9ddfc866be0397bb9c125cd
 	}
 }
 

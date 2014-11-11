@@ -1,6 +1,8 @@
 *.swp
 *.class
 
+*.*~
+
 out/
 lib/
 jdoc/

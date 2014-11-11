@@ -1,42 +1,77 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import org.json.*;
+import java.util.Queue;
+import java.util.HashSet;
+import java.util.LinkedList;
+
+
 
 /** manages the logical state of the tiles and provides an interface with manipulating them
 */
 public class LogicalTiles
 {
-	
-	/** a path of tiles that are joined
-	*/
-	public class Path
+	public static class TilePos
 	{
-		public class TilePos { public int row; public int col; }
-		public TilePos[] tiles;
+		public int row;
+		public int col;
 
-		/** get column that the path comes out at (or -1 if dead end)
-		@param rowCount the number of rows on the board
-		*/
-		public int outCol(int rowCount)
+		public TilePos(int setRow, int setCol)
 		{
-			if(tiles.length == 0) { return -1; }
-			
-			TilePos p = tiles[tiles.length-1];
-			if(p.row == rowCount) // path makes it out
-			{
-				return p.col;
-			}
-			else // path does not make it out
-			{
-				return -1;
-			}
+			row = setRow;
+			col = setCol;
 		}
+		
+		@Override
+		public String toString() { return "TilePos: (" + row + ", " + col + ")"; }
+
+		@Override
+		public int hashCode()
+		{
+			// no good for passwords, but I think this will work for our purposes
+			// from: http://stackoverflow.com/a/11742657
+			final int prime = 5171;
+			return prime * (prime + row) + col;
+		}
+		@Override
+		public boolean equals(Object other)
+		{
+			if(this == other)
+			{
+				return true;
+			}
+			if(other == null)
+			{
+				return false;
+			}
+			if(getClass() != other.getClass())
+			{
+				return false;
+			}
+			TilePos otherPos = (TilePos)other;
+			if(row != otherPos.row || col != otherPos.col)
+			{
+				return false;
+			}
+			return true;
+		}
+		
+		public TilePos posAbove() { return new TilePos(row-1, col); }
+		public TilePos posBelow() { return new TilePos(row+1, col); }
+		public TilePos posToRight() { return new TilePos(row, col+1); }
+		public TilePos posToLeft() { return new TilePos(row, col-1); }
+
 	}
+
 
 	/** 2D array of tiles
 		row major (access like so: tiles[row][col])
 	*/
 	public Tile[][] tiles;
+	/** whether there is a path from a given tile to the top row (where the air is coming from)
+		//TODO: move this into tile object maybe...
+	*/
+	public HashSet<TilePos> activeTiles;
 	private int rows;
 	private int cols;
 
@@ -48,6 +83,7 @@ public class LogicalTiles
 		rows = setRows;
 		cols = setCols;
 		tiles = new Tile[rows][cols];
+		activeTiles = new HashSet<TilePos>();
 	}
 	/** initialise logicalTiles from a JSON level file
 	 * reads the 'tiles' attribute in the JSON object
@@ -114,6 +150,9 @@ public class LogicalTiles
 	public void loadTilesFromJSONString(String JSON)
 	{
 
+		activeTiles = new HashSet<TilePos>();
+
+
 		JSONObject o = new JSONObject(JSON);
 		JSONArray tileArray = o.getJSONArray("tiles");
 		rows = tileArray.length();
@@ -167,11 +206,19 @@ public class LogicalTiles
 	public int getCols() { return cols; }
 
 	public Tile get(int row, int col) { return tiles[row][col]; }
+	public Tile get(TilePos p) { return tiles[p.row][p.col]; }
 	public Tile getAbove(int row, int col) { return tiles[row-1][col]; }
 	public Tile getRightOf(int row, int col) { return tiles[row][col+1]; }
 	public Tile getBelow(int row, int col) { return tiles[row+1][col]; }
 	public Tile getLeftOf(int row, int col) { return tiles[row][col-1]; }
 
+
+	/** call after each move
+	*/
+	public void updateActiveTiles()
+	{
+		activeTiles = getActiveTiles();
+	}
 
 	/** return connections with adjacent pipes
 	 *	if this pipe cannot connect with an adjacent pipe with a connectible edge bordering this, that does not count
@@ -182,23 +229,81 @@ public class LogicalTiles
 		boolean[] adjacency = new boolean[4];
 		Tile t = get(row, col);
 
+		
 		// [top, right, bottom, left]
-		adjacency[0] = t.top &&		(row > 0) &&	getAbove(row,col).bottom;
-		adjacency[1] = t.right &&	(col < cols) &&	getRightOf(row,col).left;
-		adjacency[2] = t.bottom &&	(row > rows) &&	getBelow(row,col).top;
-		adjacency[3] = t.left &&	(col > 0) &&	getLeftOf(row,col).right;
-
+		adjacency[0] = t.top &&		(row > 0) &&		getAbove(row,col).bottom;
+		adjacency[1] = t.right &&	(col < cols-1) &&	getRightOf(row,col).left;
+		adjacency[2] = t.bottom &&	(row < rows-1) &&	getBelow(row,col).top;
+		adjacency[3] = t.left &&	(col > 0) &&		getLeftOf(row,col).right;
+		
 		return adjacency;
 	}
 
-	/** get the paths from the top row
+	/** generate a search tree for the tiles using breadth-first search. stop when every reachable node has been visited
 	 */
-	public Path[] getPathsFrom(int col)
+	public HashSet<TilePos> getActiveTiles()
 	{
-		// classic BFS case right here
+		Queue<TilePos> frontier = new LinkedList<TilePos>();
+		HashSet<TilePos> visited = new HashSet<TilePos>();
 
-		// maybe use ArrayList<ArrayList<Path.TilePos>> while searching
-		// then grab static arrays from them at the end?
-		return null;
+		// generate an entire search tree
+		for(int col = 0; col < cols; col++)
+		{
+			TilePos t = new TilePos(0,col);
+			// note: this is different to what is returned by getAdjacentConnections, if connectible edge faces upwards on top row: true
+			if(get(t).top) // don't add if not connected to top
+			{
+				visited.add(t);
+				frontier.add(t);
+			}
+		}
+
+		while(!frontier.isEmpty())
+		{
+			TilePos t = frontier.poll();
+
+			// this function already checks for edges, so no need to repeat checks
+			boolean[] adj = getAdjacentConnections(t.row, t.col);
+			
+			if(adj[0]) // top
+			{
+				TilePos above = t.posAbove();
+				if(!visited.contains(above))
+				{
+					visited.add(above);
+					frontier.add(above);
+				}
+			}
+			if(adj[1]) // right
+			{
+				TilePos right = t.posToRight();
+				if(!visited.contains(right))
+				{
+					visited.add(right);
+					frontier.add(right);
+				}
+			}
+			if(adj[2]) // below
+			{
+				TilePos below = t.posBelow();
+				if(!visited.contains(below))
+				{
+					visited.add(below);
+					frontier.add(below);
+				}
+			}
+			if(adj[3]) // left
+			{
+				TilePos left = t.posToLeft();
+				if(!visited.contains(left))
+				{
+					visited.add(left);
+					frontier.add(left);
+				}
+			}
+
+		}
+
+		return visited;
 	}
 }

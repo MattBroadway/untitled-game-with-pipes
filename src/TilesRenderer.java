@@ -22,7 +22,8 @@ public class TilesRenderer extends JPanel
 	/** a mapping of logical tiles -&gt; images
 	 * used to dynamically choose appropriate images for logical tiles
 	*/
-	private HashMap<Tile, Image> tileImages;
+	private HashMap<Tile, Image> inactiveImages;
+	private HashMap<Tile, Image> activeImages;
 	
 
 	/** initialise a TilesRenderer for a game object
@@ -36,27 +37,73 @@ public class TilesRenderer extends JPanel
 		this.game = game;
 		tileSize = setTileSize;
 
-		tileImages = new HashMap<Tile, Image>();
+		inactiveImages = new HashMap<Tile, Image>();
+		activeImages = new HashMap<Tile, Image>();
 
 		// right angle pipes
-		Image currentImage = new Image("res/right-angle-empty.jpg");
-		tileImages.put(new Tile(false, true, true, false), currentImage);
+		Image currentImage = new Image("res/right-angle-inactive.jpg");
+		inactiveImages.put(new Tile(false, true, true, false), currentImage);
 		currentImage = currentImage.getRotatedCopy();
-		tileImages.put(new Tile(false, false, true, true), currentImage);
+		inactiveImages.put(new Tile(false, false, true, true), currentImage);
 		currentImage = currentImage.getRotatedCopy();
-		tileImages.put(new Tile(true, false, false, true), currentImage);
+		inactiveImages.put(new Tile(true, false, false, true), currentImage);
 		currentImage = currentImage.getRotatedCopy();
-		tileImages.put(new Tile(true, true, false, false), currentImage);
+		inactiveImages.put(new Tile(true, true, false, false), currentImage);
 
 		// straight pipes
-		currentImage = new Image("res/straight-empty.jpg");
-		tileImages.put(new Tile(true, false, true, false), currentImage);
+		currentImage = new Image("res/straight-inactive.jpg");
+		inactiveImages.put(new Tile(true, false, true, false), currentImage);
 		currentImage = currentImage.getRotatedCopy();
-		tileImages.put(new Tile(false, true, false, true), currentImage);
+		inactiveImages.put(new Tile(false, true, false, true), currentImage);
 
 		// cross pipe
-		currentImage = new Image("res/cross-empty.jpg");
-		tileImages.put(new Tile(true, true, true, true), currentImage);
+		currentImage = new Image("res/cross-inactive.jpg");
+		inactiveImages.put(new Tile(true, true, true, true), currentImage);
+
+		// T pipe
+		currentImage = new Image("res/T-inactive.jpg");
+		inactiveImages.put(new Tile(false, true, true, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		inactiveImages.put(new Tile(true, false, true, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		inactiveImages.put(new Tile(true, true, false, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		inactiveImages.put(new Tile(true, true, true, false), currentImage);
+
+
+
+
+
+		// right angle pipes
+		currentImage = new Image("res/right-angle-active.jpg");
+		activeImages.put(new Tile(false, true, true, false), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		activeImages.put(new Tile(false, false, true, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		activeImages.put(new Tile(true, false, false, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		activeImages.put(new Tile(true, true, false, false), currentImage);
+
+		// straight pipes
+		currentImage = new Image("res/straight-active.jpg");
+		activeImages.put(new Tile(true, false, true, false), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		activeImages.put(new Tile(false, true, false, true), currentImage);
+
+		// cross pipe
+		currentImage = new Image("res/cross-active.jpg");
+		activeImages.put(new Tile(true, true, true, true), currentImage);
+
+		// T pipe
+		currentImage = new Image("res/T-active.jpg");
+		activeImages.put(new Tile(false, true, true, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		activeImages.put(new Tile(true, false, true, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		activeImages.put(new Tile(true, true, false, true), currentImage);
+		currentImage = currentImage.getRotatedCopy();
+		activeImages.put(new Tile(true, true, true, false), currentImage);
+
 
 
 		setBackground(Color.WHITE);
@@ -111,7 +158,17 @@ public class TilesRenderer extends JPanel
 	private void drawTile(int tileRow, int tileCol, Graphics2D g2)
 	{
 		Tile t = game.tiles.tiles[tileRow][tileCol];
-		Image i = tileImages.get(t);
+		boolean active = game.tiles.activeTiles.contains(new LogicalTiles.TilePos(tileRow, tileCol));
+
+		Image i = null;
+		if(active)
+		{
+			i = activeImages.get(t);
+		}
+		else
+		{
+			i = inactiveImages.get(t);
+		}
 		
 		int x = left + tileCol * tileSize;
 		int y = top + tileRow * tileSize;
