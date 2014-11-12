@@ -135,6 +135,14 @@ public class TilesRenderer extends JPanel
 	*/
 	public void paintComponent(Graphics g)
 	{
+		clearScreen(g);
+		drawTiles(g);
+		drawScore(g);
+	}
+
+	private void drawTiles(Graphics g)
+	{
+
 		LogicalTiles logicalTiles = game.tiles;
 
 		// may be the case before a level is loaded
@@ -150,7 +158,18 @@ public class TilesRenderer extends JPanel
 				drawTile(row, col, g2);
 			}
 		}
-		
+	}	
+
+	private void clearScreen(Graphics g)
+	{
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, game.w.scrX, game.w.scrY);
+	}
+
+	private void drawScore(Graphics g)
+	{
+		g.setColor(Color.BLACK);
+		g.drawString("Time passed: " + game.getTimePassed(), 30, 30);
 	}
 
 	/** draw a single tile (the row and col refer to the tile's position in the logicalTiles object

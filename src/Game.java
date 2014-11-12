@@ -5,6 +5,7 @@ public class Game
 	public LogicalTiles tiles;
 	public TilesInputListener tilesInput;
 	public MainWindow w;
+	private double startTime;
 
 	/** the levels of the game
 	 */
@@ -36,6 +37,7 @@ public class Game
 		tiles = new LogicalTiles(levelFiles[level]);
 		tilesInput = new TilesInputListener(this);
 		w.tiles.refreshGeometry(); // sets the total grid size calculated from the loaded level
+		startTime = System.currentTimeMillis();	
 	}
 
 	/** update the state of the game (1 unit of time has passed)
@@ -54,6 +56,11 @@ public class Game
 			tiles.tiles[row][col].rotateACW();
 
 		tiles.updateActiveTiles();
+	}
+
+	public double getTimePassed()
+	{
+		return (System.currentTimeMillis() - startTime)/1000;
 	}
 }
 

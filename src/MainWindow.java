@@ -16,6 +16,8 @@ public class MainWindow extends JFrame
 	*/
 	private Game game;
 
+	public final int scrX = 640, scrY = 480;
+
 
 	/** repaints the window based on a timer
 	*/
@@ -58,7 +60,7 @@ public class MainWindow extends JFrame
 		this.game = game;
 
 		setTitle(setTitleString);
-		setSize(640, 480);
+		setSize(scrX, scrY);
 		setResizable(false);
 		setLocationRelativeTo(null); // centers the window on the screen
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
