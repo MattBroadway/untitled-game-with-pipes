@@ -11,9 +11,17 @@ public class Tile
 
 	/** initialise a tile by passing booleans
 	*/
-	Tile(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft)
+	public Tile(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft)
 	{
 		set(setTop, setRight, setBottom, setLeft);
+	}
+	public Tile(Tile other)
+	{
+		top = other.top;
+		right = other.right;
+		bottom = other.bottom;
+		left = other.left;
+		active = other.active;
 	}
 	/** set a tile by passing booleans
 	*/

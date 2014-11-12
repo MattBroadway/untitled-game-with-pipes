@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /** manages the rendering of a grid of tiles
 */
@@ -40,74 +41,62 @@ public class TilesRenderer extends JPanel
 		inactiveImages = new HashMap<Tile, Image>();
 		activeImages = new HashMap<Tile, Image>();
 
-		// right angle pipes
-		Image currentImage = new Image("res/right-angle-inactive.jpg");
-		inactiveImages.put(new Tile(false, true, true, false), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		inactiveImages.put(new Tile(false, false, true, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		inactiveImages.put(new Tile(true, false, false, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		inactiveImages.put(new Tile(true, true, false, false), currentImage);
 
-		// straight pipes
-		currentImage = new Image("res/straight-inactive.jpg");
-		inactiveImages.put(new Tile(true, false, true, false), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		inactiveImages.put(new Tile(false, true, false, true), currentImage);
+		// right angle pipe
+		loadTileRotations(new Image("res/tilesets/scrappy/right-angle-inactive.jpg"), new Tile(false, true, true, false), inactiveImages);
+
+		// straight pipe
+		loadTileRotations(new Image("res/tilesets/scrappy/straight-inactive.jpg"), new Tile(true, false, true, false), inactiveImages);
 
 		// cross pipe
-		currentImage = new Image("res/cross-inactive.jpg");
-		inactiveImages.put(new Tile(true, true, true, true), currentImage);
+		loadTileRotations(new Image("res/tilesets/scrappy/cross-inactive.jpg"), new Tile(true, true, true, true), inactiveImages);
 
 		// T pipe
-		currentImage = new Image("res/T-inactive.jpg");
-		inactiveImages.put(new Tile(false, true, true, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		inactiveImages.put(new Tile(true, false, true, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		inactiveImages.put(new Tile(true, true, false, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		inactiveImages.put(new Tile(true, true, true, false), currentImage);
+		loadTileRotations(new Image("res/tilesets/scrappy/T-inactive.jpg"), new Tile(false, true, true, true), inactiveImages);
 
 
 
+		// right angle pipe
+		loadTileRotations(new Image("res/tilesets/scrappy/right-angle-active.jpg"), new Tile(false, true, true, false), activeImages);
 
-
-		// right angle pipes
-		currentImage = new Image("res/right-angle-active.jpg");
-		activeImages.put(new Tile(false, true, true, false), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		activeImages.put(new Tile(false, false, true, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		activeImages.put(new Tile(true, false, false, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		activeImages.put(new Tile(true, true, false, false), currentImage);
-
-		// straight pipes
-		currentImage = new Image("res/straight-active.jpg");
-		activeImages.put(new Tile(true, false, true, false), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		activeImages.put(new Tile(false, true, false, true), currentImage);
+		// straight pipe
+		loadTileRotations(new Image("res/tilesets/scrappy/straight-active.jpg"), new Tile(true, false, true, false), activeImages);
 
 		// cross pipe
-		currentImage = new Image("res/cross-active.jpg");
-		activeImages.put(new Tile(true, true, true, true), currentImage);
+		loadTileRotations(new Image("res/tilesets/scrappy/cross-active.jpg"), new Tile(true, true, true, true), activeImages);
 
 		// T pipe
-		currentImage = new Image("res/T-active.jpg");
-		activeImages.put(new Tile(false, true, true, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		activeImages.put(new Tile(true, false, true, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		activeImages.put(new Tile(true, true, false, true), currentImage);
-		currentImage = currentImage.getRotatedCopy();
-		activeImages.put(new Tile(true, true, true, false), currentImage);
-
+		loadTileRotations(new Image("res/tilesets/scrappy/T-active.jpg"), new Tile(false, true, true, true), activeImages);
+	
 
 
 		setBackground(Color.WHITE);
 		setDoubleBuffered(true);
+	}
+
+	/** load multiple rotations of a tile at once
+	 * @param i the base image
+	 * @param t the base tile
+	 * @param map the map to add the loaded tile to
+	 */
+	public void loadTileRotations(Image i, Tile t, HashMap<Tile, Image> map)
+	{
+		// not the most optimal of solutions, but it will greatly simplify tile loading
+		HashSet<Tile> addedTiles = new HashSet<Tile>();
+		map.put(t, i);
+
+		for(int angle = 0; angle < 360; angle += 90)
+		{
+			t = new Tile(t);
+			t.rotateCW();
+
+			i = i.getRotatedCopy();
+
+			if(addedTiles.contains(t)) { continue; }
+
+			map.put(t, i);
+			addedTiles.add(t);
+		}
 	}
 
 	/** set the rendering position of the tiles grid

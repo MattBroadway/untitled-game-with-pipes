@@ -1,10 +1,19 @@
+# files left by editors
 *.swp
-*.class
+/project-files/netbeans/*
 
+
+# merge files
 *.*~
 
+# output files
+*.class
 out/
 lib/
 jdoc/
 
-/project-files/netbeans/*
+
+# other unwanted files
+
+# (left by dolphin file manager)
+.directory
