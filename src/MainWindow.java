@@ -16,7 +16,7 @@ public class MainWindow extends JFrame
 	*/
 	private Game game;
 
-	public final int scrX = 640, scrY = 480;
+	private final int scrX = 640, scrY = 480;
 
 
 	/** repaints the window based on a timer
@@ -94,6 +94,5 @@ public class MainWindow extends JFrame
 		tiles.repaint();
 		Toolkit.getDefaultToolkit().sync();
 	}
-
 }
 

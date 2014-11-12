@@ -161,9 +161,10 @@ public class TilesRenderer extends JPanel
 	}	
 
 	private void clearScreen(Graphics g)
-	{
+	{	
+		Dimension scrSize = game.w.getSize();
 		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, game.w.scrX, game.w.scrY);
+		g.fillRect(0, 0, (int)scrSize.getWidth(), (int)scrSize.getHeight());
 	}
 
 	private void drawScore(Graphics g)
