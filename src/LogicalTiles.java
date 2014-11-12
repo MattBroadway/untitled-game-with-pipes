@@ -301,7 +301,6 @@ public class LogicalTiles
 					frontier.add(left);
 				}
 			}
-
 		}
 
 		return visited;

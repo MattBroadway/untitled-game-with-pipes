@@ -1,5 +1,8 @@
+import java.util.Arrays;
+
 /** manages the logical state of the game
 */
+
 public class Game
 {
 	public LogicalTiles tiles;
@@ -45,6 +48,7 @@ public class Game
 	*/
 	public void tick()
 	{
+		System.out.println(Arrays.toString(getActiveCandles()));
 	}
 
 	/** handle a mouse click action (as reported by the TilesInputListener)
@@ -62,6 +66,17 @@ public class Game
 	public double getTimePassed()
 	{
 		return (System.currentTimeMillis() - startTime)/1000;
+	}
+
+	public boolean[] getActiveCandles()
+	{
+		boolean ret[] = new boolean[tiles.tiles[0].length];
+		
+		for(LogicalTiles.TilePos tp : tiles.activeTiles)
+			if(tp.row == tiles.tiles.length)
+				ret[tp.col] = true;
+
+		return ret;
 	}
 }
 
