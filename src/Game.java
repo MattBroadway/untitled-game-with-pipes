@@ -28,6 +28,7 @@ public class Game
 		w.tiles.setPos(100, 100);
 
 		loadLevel(0);
+		tiles.updateActiveTiles();
 	}
 
 	/** load a level from the levelFiles attribute (zero indexed)
