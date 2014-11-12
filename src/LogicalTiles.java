@@ -134,7 +134,6 @@ public class LogicalTiles
 		}
 
 		return fileContents;
-
 	}
 
 	/** initialise logicalTiles from a JSON level file
@@ -149,9 +148,7 @@ public class LogicalTiles
 	*/
 	public void loadTilesFromJSONString(String JSON)
 	{
-
 		activeTiles = new HashSet<TilePos>();
-
 
 		JSONObject o = new JSONObject(JSON);
 		JSONArray tileArray = o.getJSONArray("tiles");
@@ -174,9 +171,6 @@ public class LogicalTiles
 					readBoolFrom(tileEntry, 3)
 				);
 			}
-
-
-
 		}
 		
 	}

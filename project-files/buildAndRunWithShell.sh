@@ -8,7 +8,7 @@ while getopts ":lb" opt; do
 case "$opt" in
 	l)
 		echo Updating libraries
-		bash ./getLibs.sh
+		bash $SCRIPTPATH/getLibs.sh
 		;;
 	b)
 		echo Building the game

@@ -31,7 +31,6 @@ public class Game
 		w.tiles.setPos(100, 100);
 
 		loadLevel(0);
-		tiles.updateActiveTiles();
 	}
 
 	/** load a level from the levelFiles attribute (zero indexed)
@@ -42,13 +41,14 @@ public class Game
 		tilesInput = new TilesInputListener(this);
 		w.tiles.refreshGeometry(); // sets the total grid size calculated from the loaded level
 		startTime = System.currentTimeMillis();	
+		tiles.updateActiveTiles();
 	}
 
 	/** update the state of the game (1 unit of time has passed)
 	*/
 	public void tick()
 	{
-		System.out.println(Arrays.toString(getActiveCandles()));
+		//System.out.println(Arrays.toString(getActiveCandles()));
 	}
 
 	/** handle a mouse click action (as reported by the TilesInputListener)
@@ -70,11 +70,13 @@ public class Game
 	
 	public boolean[] getActiveCandles()
 	{
-		boolean ret[] = new boolean[tiles.tiles[0].length];
+		boolean ret[] = new boolean[tiles.getCols()];
 		
-		for(LogicalTiles.TilePos tp : tiles.activeTiles)
-			if(tp.row == tiles.tiles.length-1 && tiles.get(tp).bottom)
-				ret[tp.col] = true;
+		for(int col = 0; col < tiles.getCols(); col++)
+		{
+			LogicalTiles.TilePos p = new LogicalTiles.TilePos(tiles.getRows()-1, col);
+			ret[col] = tiles.activeTiles.contains(p) && tiles.get(p).bottom;
+		}
 		return ret;
 	}
 }
