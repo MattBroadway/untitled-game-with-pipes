@@ -67,16 +67,16 @@ public class Game
 	{
 		return (System.currentTimeMillis() - startTime)/1000;
 	}
-
+	
 	public boolean[] getActiveCandles()
 	{
 		boolean ret[] = new boolean[tiles.tiles[0].length];
 		
 		for(LogicalTiles.TilePos tp : tiles.activeTiles)
-			if(tp.row == tiles.tiles.length)
+			if(tp.row == tiles.tiles.length-1 && tiles.get(tp).bottom)
 				ret[tp.col] = true;
-
 		return ret;
 	}
 }
+
 
