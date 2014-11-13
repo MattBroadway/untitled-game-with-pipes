@@ -9,6 +9,7 @@ public class Game
 	public LogicalCandles candles;
 	public TilesInputListener tilesInput;
 	public MainWindow w;
+	public int cursorX=0, cursorY=0;
 	private double startTime;
 
 	/** the levels of the game
@@ -34,7 +35,6 @@ public class Game
 		// audio test
 		Audio audio = new Audio();
 		audio.register("intro", "res/sfx/trololo3.wav");
-		//audio.play("intro");
 		
 		loadLevel(0);
 	}
@@ -57,7 +57,7 @@ public class Game
 	}
 
 	/** update the state of the game (1 unit of time has passed)
-	*/
+	 */
 	public void tick()
 	{
 		boolean toBlow[] = getActiveBottomTiles();
@@ -70,16 +70,32 @@ public class Game
 		}
 	}
 
-	/** handle a mouse click action (as reported by the TilesInputListener)
-	 */
-	public void handleTileClicked(int row, int col, boolean leftClick)
+	public void rotateCW()
 	{
-		if(leftClick)
-			tiles.tiles[row][col].rotateCW();
-		else
-			tiles.tiles[row][col].rotateACW();
-
+		tiles.get(cursorY, cursorX).rotateCW();
 		tiles.updateActiveTiles();
+	}
+	
+	public void rotateACW()
+	{
+		tiles.get(cursorY, cursorX).rotateACW();
+		tiles.updateActiveTiles();
+	}
+	
+	public void setCursor(int row, int col)
+	{
+		cursorX = col;
+		if (cursorX >= tiles.getCols()) cursorX = 0;
+		else if (cursorX < 0) cursorX = tiles.getCols()-1;
+		
+		cursorY = row;
+		if (cursorY >= tiles.getRows()) cursorY = 0;
+		else if (cursorY < 0) cursorY = tiles.getRows()-1;
+	}
+	
+	public void moveCursor(int dy, int dx)
+	{
+		setCursor(cursorY + dy, cursorX + dx);
 	}
 
 	public double getTimePassed()

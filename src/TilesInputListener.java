@@ -1,25 +1,26 @@
 import java.awt.event.*;
 import javax.swing.SwingUtilities;
 
-/** class that listens for mouse events over the area of a tiles grid and reports which tiles are clicked
-*/
-public class TilesInputListener implements MouseListener
+/**
+ * class that listens for key events and mouse events over
+ * the area of a tiles grid and adjusts the game state in response
+ */
+public class TilesInputListener implements MouseListener, KeyListener
 {
-	/** needs access to the global state
-	*/
+	
 	private Game game;
-
-	/** initialise the listener for a game object
-	*/
+	
 	public TilesInputListener(Game game)
 	{
 		this.game = game;
 		game.w.tiles.addMouseListener(this);
+		game.w.addKeyListener(this);
 	}
-
 	
-	/** This event is fired when the mouse is clicked. It reports the event to the game object to handle
-	*/
+	/**
+	 * This event is fired when the mouse is clicked. It reports
+	 * the event to the game object to handle
+	 */
 	public void mouseClicked(MouseEvent e)
 	{
 		boolean leftClick = SwingUtilities.isLeftMouseButton(e);
@@ -28,17 +29,48 @@ public class TilesInputListener implements MouseListener
 		if(row != -1 && col != -1)
 		{
 			System.out.println("tile: [row:"+row+" col:"+col+"] clicked");
-			game.handleTileClicked(row, col, leftClick);
+			game.setCursor(row, col);
+			if (leftClick) game.rotateACW();
+			else game.rotateCW();
 		}
-
 	}
 	public void mousePressed(MouseEvent e) {}
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
+	
+	
+	public void keyPressed(KeyEvent e)
+	{
+		System.out.println("key pressed: " + e.getKeyText(e.getKeyCode()));
+		switch (e.getKeyCode())
+		{
+			case KeyEvent.VK_LEFT:  game.moveCursor(0, -1); break;
+			case KeyEvent.VK_RIGHT: game.moveCursor(0, 1);  break;
+			case KeyEvent.VK_UP:    game.moveCursor(-1, 0); break;
+			case KeyEvent.VK_DOWN:  game.moveCursor(1, 0);  break;
+			
+			case KeyEvent.VK_A:
+			case KeyEvent.VK_HOME:
+				game.rotateACW();
+				break;
+				
+			case KeyEvent.VK_S:
+			case KeyEvent.VK_END:
+				game.rotateCW();
+				break;
+				
+			// case KeyEvent.VK_P: // TODO: pause
+			// case KeyEvent.VK_M: // TODO: mute
+		}
+	}
+	public void keyReleased(KeyEvent e) {}
+	public void keyTyped(KeyEvent e) {}
+	
 
-	/** convert x coordinate (pixels) to a column in the logicalTiles object
-	*/
+	/**
+	 * convert x coordinate (pixels) to a column in the logicalTiles object
+	 */
 	public int xCoordToCol(int x)
 	{
 		int left = game.w.tiles.left;
@@ -56,8 +88,9 @@ public class TilesInputListener implements MouseListener
 			return naiveCol;
 		}
 	}
-	/** convert y coordinate (pixels) to a row in the logicalTiles object
-	*/
+	/**
+	 * convert y coordinate (pixels) to a row in the logicalTiles object
+	 */
 	public int yCoordToRow(int y)
 	{
 		int top = game.w.tiles.top;

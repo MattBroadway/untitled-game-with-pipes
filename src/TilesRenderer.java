@@ -24,6 +24,7 @@ public class TilesRenderer extends JPanel
 	/** a mapping of logical tiles to images
 	 * used to dynamically choose appropriate images for logical tiles
 	 */
+	 
 	// TODO: give these sensible names
 	private HashMap<Tile, Image> inactiveImages;
 	private HashMap<Tile, Image> activeImages;
@@ -31,6 +32,8 @@ public class TilesRenderer extends JPanel
 	private HashMap<Candle.Type, Image> litImages;
 	
 
+	private Image cursor;
+	
 	/** initialise a TilesRenderer for a game object
 	 * @param game the game object to create the renderer for
 	 * @param setTileSize the size (width and height) of a single tile in pixels
@@ -46,7 +49,9 @@ public class TilesRenderer extends JPanel
 		activeImages = new HashMap<Tile, Image>();
 		unlitImages = new HashMap<Candle.Type, Image>();
 		litImages = new HashMap<Candle.Type, Image>();
-
+		
+		cursor = new Image("res/tilesets/neater/cursor.png");
+		
 		// right angle pipe
 		loadTileRotations(new Image("res/tilesets/neater/right-angle-inactive.jpg"), new Tile(false, true, true, false), inactiveImages);
 
@@ -175,11 +180,12 @@ public class TilesRenderer extends JPanel
 			}
 		}
 
-
 		for (int col = 0; col < cols; col++)
 		{
 			drawCandle(col, g2);
 		}
+		
+		drawCursor(g2);
 	}	
 	
 	private void clearScreen(Graphics g)
@@ -217,6 +223,13 @@ public class TilesRenderer extends JPanel
 		int y = top + tileRow * tileSize;
 		
 		g2.drawImage(i.getImage(), x, y, null);
+	}
+	
+	private void drawCursor(Graphics2D g2)
+	{
+		int x = left + game.cursorX * tileSize;
+		int y = top + game.cursorY * tileSize;
+		g2.drawImage(cursor.getImage(), x, y, null);
 	}
 	
 	private void drawCandle(int col, Graphics2D g2)
