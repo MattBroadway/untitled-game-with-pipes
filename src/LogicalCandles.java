@@ -21,6 +21,10 @@ public class LogicalCandles
 		loadCandlesFromJSONFile(JSONFile);
 	}
         
+        /**
+         * returns a boolean array of whether of not each candle is lit
+         * @return stats the array mentioned above
+         */
         public boolean[] getCandlesStatus()
         {
             boolean[] stats = new boolean[cols];

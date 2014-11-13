@@ -56,7 +56,7 @@ public class Game
                 for (int i = 0; i < toBlow.length; i++)
                 {
                         if (toBlow[i]) {
-                                candles.candles[i].blowCandle();
+                                candles.candles[i].blow();
                         }
                 }
 	}

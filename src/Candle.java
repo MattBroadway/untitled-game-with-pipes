@@ -12,7 +12,10 @@ public class Candle {
     public static final int TNT = 3;
     public static final int KINDLE = 4;
     
-    
+    /**
+     * Initialises a new candle, defaulted
+     * @param type 
+     */
     Candle(int type)
     {
         this.type = type;
@@ -27,6 +30,11 @@ public class Candle {
         }
     }
     
+    /**
+     * Initialises a new candle, custom fuse time
+     * @param type
+     * @param fuse 
+     */
     Candle(int type, int fuse)
     {
         this.type = type;
@@ -41,6 +49,11 @@ public class Candle {
         }
     }
     
+    /**
+     * Initialises a new candle, custom initially lit status
+     * @param type
+     * @param lit 
+     */
     Candle(int type, boolean lit)
     {
         this.type = type;
@@ -80,7 +93,14 @@ public class Candle {
         return this.hashCode() == other.hashCode();
     }
     
-    public void blowCandle()
+    /**
+     * looks at the type of candle this is and interacts with it accordingly
+     * NORMAL candles will go out once blown
+     * TRICK candles will go out once blown and relight after it's fuse time expires
+     * TNT will go out once blown
+     * KINDLE candles reverse their lit status when blown
+     */
+    public void blow()
     {
         switch(type)
         {
