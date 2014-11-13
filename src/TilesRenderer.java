@@ -46,30 +46,30 @@ public class TilesRenderer extends JPanel
                 litImages = new HashMap<Candle, Image>();
 
 		// right angle pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/right-angle-inactive.jpg"), new Tile(false, true, true, false), inactiveImages);
+		loadTileRotations(new Image("res/tilesets/neater/right-angle-inactive.jpg"), new Tile(false, true, true, false), inactiveImages);
 
 		// straight pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/straight-inactive.jpg"), new Tile(true, false, true, false), inactiveImages);
+		loadTileRotations(new Image("res/tilesets/neater/straight-inactive.jpg"), new Tile(true, false, true, false), inactiveImages);
 
 		// cross pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/cross-inactive.jpg"), new Tile(true, true, true, true), inactiveImages);
+		loadTileRotations(new Image("res/tilesets/neater/cross-inactive.jpg"), new Tile(true, true, true, true), inactiveImages);
 
 		// T pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/T-inactive.jpg"), new Tile(false, true, true, true), inactiveImages);
+		loadTileRotations(new Image("res/tilesets/neater/T-inactive.jpg"), new Tile(false, true, true, true), inactiveImages);
 
 
 
 		// right angle pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/right-angle-active.jpg"), new Tile(false, true, true, false), activeImages);
+		loadTileRotations(new Image("res/tilesets/neater/right-angle-active.jpg"), new Tile(false, true, true, false), activeImages);
 
 		// straight pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/straight-active.jpg"), new Tile(true, false, true, false), activeImages);
+		loadTileRotations(new Image("res/tilesets/neater/straight-active.jpg"), new Tile(true, false, true, false), activeImages);
 
 		// cross pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/cross-active.jpg"), new Tile(true, true, true, true), activeImages);
+		loadTileRotations(new Image("res/tilesets/neater/cross-active.jpg"), new Tile(true, true, true, true), activeImages);
 
 		// T pipe
-		loadTileRotations(new Image("res/tilesets/scrappy/T-active.jpg"), new Tile(false, true, true, true), activeImages);
+		loadTileRotations(new Image("res/tilesets/neater/T-active.jpg"), new Tile(false, true, true, true), activeImages);
 	
                 //unlit candles
                 Image currentImage = new Image("res/normal-candle-unlit.jpg");
