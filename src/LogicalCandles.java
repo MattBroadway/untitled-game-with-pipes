@@ -21,7 +21,7 @@ public class LogicalCandles
 		this.cols = cols;
 		loadCandlesFromJSONFile(JSONFile);
 	}
-		
+	
 	/**
 	 * returns a boolean array of whether of not each candle is lit
 	 * @return stats the array mentioned above
@@ -97,8 +97,6 @@ public class LogicalCandles
 		
 		candles = new Candle[cols];
 
-		System.out.println(candleArray);
-		
 		
 		for(int col = 0; col < cols; col++)
 		{

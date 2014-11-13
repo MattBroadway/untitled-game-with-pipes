@@ -34,7 +34,7 @@ public class Game
 		// audio test
 		Audio audio = new Audio();
 		audio.register("intro", "res/sfx/trololo3.wav");
-		audio.play("intro");
+		//audio.play("intro");
 		
 		loadLevel(0);
 	}
@@ -43,12 +43,17 @@ public class Game
 	 */
 	public void loadLevel(int level)
 	{
+		long loadStart = System.currentTimeMillis();
+
 		tiles = new LogicalTiles(levelFiles[level]);
 		candles = new LogicalCandles(levelFiles[level], tiles.getCols());
 		tilesInput = new TilesInputListener(this);
 		w.tiles.refreshGeometry(); // sets the total grid size calculated from the loaded level
 		startTime = System.currentTimeMillis();	
 		tiles.updateActiveTiles();
+
+		long loadTime = System.currentTimeMillis() - loadStart;
+		System.out.println("level " + level + " (" + levelFiles[level] + ") loaded in " + loadTime + "ms");
 	}
 
 	/** update the state of the game (1 unit of time has passed)
