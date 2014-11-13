@@ -31,6 +31,11 @@ public class Game
 		w = new MainWindow(this, "Pipes Game", 30/*FPS*/);
 		w.tiles.setPos(100, 100);
 		
+		// audio test
+		Audio audio = new Audio();
+		audio.register("intro", "res/sfx/trololo3.wav");
+		audio.play("intro");
+		
 		loadLevel(0);
 	}
 
