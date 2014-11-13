@@ -15,8 +15,11 @@ public class Audio
 	{
 		try
 		{
-			Clip clip = AudioSystem.getClip();
-			clip.open(AudioSystem.getAudioInputStream(new File(filename)));
+			AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
+			AudioFormat format = stream.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			Clip clip = (Clip) AudioSystem.getLine(info);
+			clip.open(stream);
 			//clip.addLineListener(() -> {
 				// close the clip after it stops playing?
 			//});
@@ -32,9 +35,6 @@ public class Audio
 	public void play(String name)
 	{
 		Clip clip = clips.get(name);
-		// should this just let it throw an exception? otherwise no-one will know if they are
-		// getting the name of a clip wrong
-		if (clip == null) return;
 		clip.start();
 	}
 } 
