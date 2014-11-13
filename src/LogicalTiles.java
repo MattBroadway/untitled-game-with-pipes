@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 
-
 /** manages the logical state of the tiles and provides an interface with manipulating them
 */
 public class LogicalTiles
@@ -15,7 +14,7 @@ public class LogicalTiles
 	{
 		public int row;
 		public int col;
-
+		
 		public TilePos(int setRow, int setCol)
 		{
 			row = setRow;
@@ -24,7 +23,7 @@ public class LogicalTiles
 		
 		@Override
 		public String toString() { return "TilePos: (" + row + ", " + col + ")"; }
-
+		
 		@Override
 		public int hashCode()
 		{
@@ -103,14 +102,14 @@ public class LogicalTiles
 		try
 		{
 			String line;
- 
+			
 			reader = new BufferedReader(new FileReader(filename));
- 
+			
 			while((line = reader.readLine()) != null)
 			{
 				fileContents += line;
 			}
- 
+			
 		}
 		catch(java.io.IOException e)
 		{
@@ -135,7 +134,7 @@ public class LogicalTiles
 
 		return fileContents;
 	}
-
+	
 	/** initialise logicalTiles from a JSON level file
 	 * reads the 'tiles' attribute in the JSON object
 	*/
@@ -149,7 +148,7 @@ public class LogicalTiles
 	public void loadTilesFromJSONString(String JSON)
 	{
 		activeTiles = new HashSet<TilePos>();
-
+		
 		JSONObject o = new JSONObject(JSON);
 		JSONArray tileArray = o.getJSONArray("tiles");
 		rows = tileArray.length();
@@ -205,15 +204,15 @@ public class LogicalTiles
 	public Tile getRightOf(int row, int col) { return tiles[row][col+1]; }
 	public Tile getBelow(int row, int col) { return tiles[row+1][col]; }
 	public Tile getLeftOf(int row, int col) { return tiles[row][col-1]; }
-
-
+	
+	
 	/** call after each move
 	*/
 	public void updateActiveTiles()
 	{
 		activeTiles = getActiveTiles();
 	}
-
+	
 	/** return connections with adjacent pipes
 	 *	if this pipe cannot connect with an adjacent pipe with a connectible edge bordering this, that does not count
 	 * @return [top, right, bottom, left]
@@ -296,7 +295,7 @@ public class LogicalTiles
 				}
 			}
 		}
-
+		
 		return visited;
 	}
 }

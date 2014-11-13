@@ -12,7 +12,7 @@ public class Image
 	/** The image data
 	*/
 	private BufferedImage data;
-
+	
 	/** Load from a file
 	 * According to the javax.imageio documentation, these formats are supported for reading:
 	 *	- JPEG
@@ -42,6 +42,7 @@ public class Image
 	{
 		data = i;
 	}
+	
 	/** Get the BufferedImage from the Image
 	 * @return the BufferedImage object
 	 */
@@ -53,7 +54,7 @@ public class Image
 	{
 		AffineTransform trans = new AffineTransform();
 		trans.rotate(Math.PI/2, data.getWidth() / 2, data.getHeight() / 2);
-
+		
 		AffineTransformOp op = new AffineTransformOp(trans, AffineTransformOp.TYPE_BILINEAR);
 		return new Image(op.filter(data, null));
 	}
