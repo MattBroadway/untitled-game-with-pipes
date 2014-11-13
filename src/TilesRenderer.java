@@ -25,6 +25,8 @@ public class TilesRenderer extends JPanel
 	*/
 	private HashMap<Tile, Image> inactiveImages;
 	private HashMap<Tile, Image> activeImages;
+        private HashMap<Candle, Image> unlitImages;
+        private HashMap<Candle, Image> litImages;
 	
 
 	/** initialise a TilesRenderer for a game object
@@ -40,7 +42,8 @@ public class TilesRenderer extends JPanel
 
 		inactiveImages = new HashMap<Tile, Image>();
 		activeImages = new HashMap<Tile, Image>();
-
+                unlitImages = new HashMap<Candle, Image>();
+                litImages = new HashMap<Candle, Image>();
 
 		// right angle pipe
 		loadTileRotations(new Image("res/tilesets/scrappy/right-angle-inactive.jpg"), new Tile(false, true, true, false), inactiveImages);
@@ -68,7 +71,30 @@ public class TilesRenderer extends JPanel
 		// T pipe
 		loadTileRotations(new Image("res/tilesets/scrappy/T-active.jpg"), new Tile(false, true, true, true), activeImages);
 	
-
+                //unlit candles
+                Image currentImage = new Image("res/normal-candle-unlit.jpg");
+                unlitImages.put(new Candle(1,false), currentImage);
+                currentImage = new Image("res/trick-candle-unlit.jpg");
+                unlitImages.put(new Candle(2,false), currentImage);
+                currentImage = new Image("res/TNT-candle-unlit.jpg");
+                unlitImages.put(new Candle(3,false), currentImage);
+                currentImage = new Image("res/kindle-candle-unlit.jpg");
+                unlitImages.put(new Candle(4,false), currentImage);
+                
+                //lit candles
+                currentImage = new Image("res/normal-candle-lit.jpg");
+                litImages.put(new Candle(1,true), currentImage);
+                currentImage = new Image("res/trick-candle-lit.jpg");
+                litImages.put(new Candle(2,true), currentImage);
+                currentImage = new Image("res/TNT-candle-lit.jpg");
+                litImages.put(new Candle(3,true), currentImage);
+                currentImage = new Image("res/kindle-candle-lit.jpg");
+                litImages.put(new Candle(4,true), currentImage);
+                
+                //Empty
+                currentImage = new Image("res/empty.jpg");
+                unlitImages.put(new Candle(0,false), currentImage);
+                litImages.put(new Candle(0,true), currentImage);
 
 		setBackground(Color.WHITE);
 		setDoubleBuffered(true);
@@ -139,14 +165,18 @@ public class TilesRenderer extends JPanel
 
 		Graphics2D g2 = (Graphics2D)g;
 		
+                int cols = logicalTiles.tiles[0].length;
 		for(int row = 0; row < logicalTiles.tiles.length; row++)
 		{
-			int cols = logicalTiles.tiles[0].length;
 			for(int col = 0; col < cols; col++)
 			{
 				drawTile(row, col, g2);
 			}
 		}
+                for (int col = 0; col < cols; col++)
+                {
+                        drawCandle(logicalTiles.tiles.length, col, g2);
+                }
 	}	
 
 	private void clearScreen(Graphics g)
@@ -178,6 +208,29 @@ public class TilesRenderer extends JPanel
 		{
 			i = inactiveImages.get(t);
 		}
+		
+		int x = left + tileCol * tileSize;
+		int y = top + tileRow * tileSize;
+
+		g2.drawImage(i.getImage(), x, y, null);
+	}
+        
+        private void drawCandle(int tileRow, int tileCol, Graphics2D g2)
+	{
+		Candle c = game.candles.candles[tileCol];
+		boolean active = game.candles.getCandlesStatus()[tileCol];
+                
+                
+		Image i = null;
+		if(active)
+		{
+			i = litImages.get(c);
+		}
+		else
+		{
+			i = unlitImages.get(c);
+		}
+                
 		
 		int x = left + tileCol * tileSize;
 		int y = top + tileRow * tileSize;

@@ -6,6 +6,7 @@ import java.util.Arrays;
 public class Game
 {
 	public LogicalTiles tiles;
+        public LogicalCandles candles;
 	public TilesInputListener tilesInput;
 	public MainWindow w;
 	private double startTime;
@@ -38,6 +39,7 @@ public class Game
 	public void loadLevel(int level)
 	{
 		tiles = new LogicalTiles(levelFiles[level]);
+                candles = new LogicalCandles(levelFiles[level], tiles.getCols());
 		tilesInput = new TilesInputListener(this);
 		w.tiles.refreshGeometry(); // sets the total grid size calculated from the loaded level
 		startTime = System.currentTimeMillis();	
@@ -49,6 +51,14 @@ public class Game
 	public void tick()
 	{
 		//System.out.println(Arrays.toString(getActiveCandles()));
+            boolean toBlow[] = getActiveBottomTiles();
+                
+                for (int i = 0; i < toBlow.length; i++)
+                {
+                        if (toBlow[i]) {
+                                candles.candles[i].blowCandle();
+                        }
+                }
 	}
 
 	/** handle a mouse click action (as reported by the TilesInputListener)
@@ -68,7 +78,7 @@ public class Game
 		return (System.currentTimeMillis() - startTime)/1000;
 	}
 	
-	public boolean[] getActiveCandles()
+	public boolean[] getActiveBottomTiles()
 	{
 		boolean ret[] = new boolean[tiles.getCols()];
 		

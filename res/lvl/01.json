@@ -10,9 +10,6 @@
 		[0,1]
 	],
 	"candles" : [
-		{ "type" : "None"},
-		{ "type" : "Basic"},
-		{ "type" : "Trick", "relight-time" : 2 },
-		{ "type" : "TNT", "time" : 15 }
+		[1,0],[2,5],[3,15],[4,0],[1,0],[0,0]
 	]
 }
