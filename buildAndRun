@@ -1,4 +1,3 @@
 #!/bin/bash
 
-rm -rf out/res
 bash project-files/buildAndRunWithShell.sh -b

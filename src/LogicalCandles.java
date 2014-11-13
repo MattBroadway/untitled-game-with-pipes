@@ -9,6 +9,8 @@ import org.json.JSONObject;
 public class LogicalCandles
 {
 	public Candle[] candles;
+	// ideally this info should be in one place, not two places that
+	// are kept in sync
 	public int cols;
 	
 	/** initialise logicalTiles from a JSON level file
@@ -28,7 +30,7 @@ public class LogicalCandles
 	{
 		boolean[] stats = new boolean[cols];
 		for (int i = 0; i < cols; i++) {
-			stats[i] = candles[i].getLit();
+			stats[i] = candles[i].lit;
 		}
 		return stats;
 	}
@@ -78,7 +80,7 @@ public class LogicalCandles
 	}
 		
 	/** initialise logicalTiles from a JSON level file
-	 * reads the 'tiles' attribute in the JSON object
+	 * reads the "candles" attribute in the JSON object
 	*/
 	public void loadCandlesFromJSONFile(String JSONFile)
 	{
@@ -86,7 +88,7 @@ public class LogicalCandles
 	}
 		
 	/** initialise logicalTiles from a JSON level string
-	 * reads the 'tiles' attribute in the JSON object
+	 * reads the "candles" attribute in the JSON object
 	*/
 	public void loadCandlesFromJSONString(String JSON)
 	{
@@ -101,15 +103,16 @@ public class LogicalCandles
 		for(int col = 0; col < cols; col++)
 		{
 		
-			JSONArray candleEntry = candleArray.getJSONArray(col);
-		
-			if (candleEntry.getInt(0) == 0||candleEntry.getInt(0) == 1||candleEntry.getInt(0) == 4) {
-				candles[col] = new Candle(candleEntry.getInt(0));
-			}
-			else
-			{
-				candles[col] = new Candle(candleEntry.getInt(0),candleEntry.getInt(1));
-			}
+			JSONObject candleEntry = candleArray.getJSONObject(col);
+
+			Candle.Type t = Candle.Type.valueOf(candleEntry.getString("type"));
+
+			// these become null if not present, in which case the constructor
+			// chooses appropriate default values
+			Integer fuse = candleEntry.has("fuse") ? candleEntry.getInt("fuse") : null;
+			Boolean lit = candleEntry.has("lit") ? candleEntry.getBoolean("lit") : null;
+
+			candles[col] = new Candle(t, fuse, lit);
 		}		
 	}
 	

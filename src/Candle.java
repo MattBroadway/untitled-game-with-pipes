@@ -3,94 +3,92 @@
  */
 public class Candle {
 
-	private final int type;
-	private boolean lit;
-	private int fuse;
-	public static final int EMPTY = 0;
-	public static final int NORMAL = 1;
-	public static final int TRICK = 2;
-	public static final int TNT = 3;
-	public static final int KINDLE = 4;
-	
-	/**
-	 * Initialises a new candle, defaulted
-	 * @param type 
-	 */
-	public Candle(int type)
+	public final Type type;
+	public boolean lit;
+	public int fuse;
+
+	public static enum Type
 	{
-		this.type = type;
-		this.fuse = 0;
-		if (type == KINDLE || type == EMPTY)
-		{
-			lit = false;
-		}
-		else
-		{
-			lit = true;
-		}
+		EMPTY(0),
+		NORMAL(1),
+		TRICK(2),
+		TNT(3),
+		KINDLE(4);
+		
+		public final int id;
+		Type(int id) { this.id = id; }
 	}
-	
+	public static int[] defaultFuse =
+	{
+		0, // EMPTY
+		0, // NORMAL
+		5, // TRICK
+		15,// TNT
+		0, // KINDLE
+	};
+	public static boolean[] defaultLit =
+	{
+		false, // EMPTY
+		true,  // NORMAL
+		true,  // TRICK
+		true,  // TNT
+		false, // KINDLE
+	};
+
 	/**
-	 * Initialises a new candle, custom fuse time
-	 * @param type
-	 * @param fuse 
+	 * Initialises a new candle, default values dependent on type
+	 * @param type see Candle.Type docs
 	 */
-	public Candle(int type, int fuse)
+	public Candle(Type type)
 	{
 		this.type = type;
-		this.fuse = fuse;
-		if (type == KINDLE || type == EMPTY)
-		{
-			lit = false;
-		}
-		else
-		{
-			lit = true;
-		}
+		this.fuse = defaultFuse[type.id];
+		this.lit = defaultLit[type.id];
 	}
 	
 	/**
-	 * Initialises a new candle, custom initially lit status
-	 * @param type
-	 * @param lit 
+	 * Initialises a new candle, custom settings
+	 * @param type see Candle.Type docs
+	 * @param fuse set the fuse time (null for default)
+	 * @param lit whether the candle is initially lit (null for default)
 	 */
-	Candle(int type, boolean lit)
+	public Candle(Type type, Integer fuse, Boolean lit)
 	{
 		this.type = type;
-		this.lit = lit;
-		fuse = 0;
+		
+		this.fuse = (fuse==null) ? defaultFuse[type.id] : fuse;
+		this.lit = (lit==null) ? defaultLit[type.id] : lit;
 	}
-	
-	public boolean getLit()
-	{
-		return lit;
-	}
+
 	
 	public String toString()
 	{
-		return "Type: " + type + ", Fuse: " + fuse;
+		return "Candle of Type: " + type + ", Fuse: " + fuse;
 	}
 	
-	public void setLit(boolean lit)
-	{
-		this.lit = lit;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		int hash = 10 * type;
-		if(lit)
-		{
-			hash++;
-		}
-		return hash;
-	}
 	
 	@Override
 	public boolean equals(Object other)
 	{
-		return this.hashCode() == other.hashCode();
+		if(this == other)
+		{
+			return true;
+		}
+		if(other == null)
+		{
+			return false;
+		}
+		if(getClass() != other.getClass())
+		{
+			return false;
+		}
+
+		Candle otherCandle = (Candle)other;
+		if(hashCode() != otherCandle.hashCode())
+		{
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -105,27 +103,27 @@ public class Candle {
 		switch(type)
 		{
 			case NORMAL:
-				if (lit)
-				{
-					lit = false;
-				}
+			{
+				lit = false;
 				break;
+			}
 			case TRICK:
-				if (lit)
-				{
-					lit = false;
-				}
+			{
+				lit = false;
 				break;
+			}
 			case TNT:
-				if (lit)
-				{
-					lit = false;
-				}
+			{
+				lit = false;
 				break;
+			}
 			case KINDLE :
+			{
 				lit = !lit;
 				break;
-				
+			}
+			default:
+				throw new java.lang.UnsupportedOperationException();
 		}
 	}
 	
