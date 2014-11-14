@@ -1,6 +1,7 @@
 # files left by editors
 *.swp
 /project-files/netbeans/*
+/project-files/eclipse/*
 
 
 # merge files
