@@ -82,7 +82,7 @@ public class TilesRenderer extends JPanel
 		currentImage = new Image("res/trick-candle-unlit.jpg");
 		unlitImages.put(Candle.Type.TRICK, currentImage);
 		currentImage = new Image("res/TNT-candle-unlit.jpg");
-		unlitImages.put(Candle.Type.TRICK, currentImage);
+		unlitImages.put(Candle.Type.TNT, currentImage);
 		currentImage = new Image("res/kindle-candle-unlit.jpg");
 		unlitImages.put(Candle.Type.KINDLE, currentImage);
 		
