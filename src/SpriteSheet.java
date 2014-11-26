@@ -54,7 +54,7 @@ public class SpriteSheet
 		loadTileByName(baseDir, "cross", new boolean[]{true, true, true, true});
 		loadTileByName(baseDir, "T", new boolean[]{false, true, true, true});
 		
-		baseDir = "res/candles/";
+		baseDir = "res/candles/first/";
 		loadCandle(baseDir, "normal-candle", Candle.Type.NORMAL);
 		loadCandle(baseDir, "trick-candle", Candle.Type.TRICK);
 		loadCandle(baseDir, "TNT-candle", Candle.Type.TNT);
@@ -72,9 +72,9 @@ public class SpriteSheet
 	}
 	private void loadCandle(String baseDir, String name, Candle.Type type)
 	{
-		Image i = new Image(baseDir + name + "-unlit.jpg");
+		Image i = new Image(baseDir + name + "-unlit.png");
 		unlitCandles.put(type, i);
-		i = new Image(baseDir + name + "-lit.jpg");
+		i = new Image(baseDir + name + "-lit.png");
 		litCandles.put(type, i);
 	}
 

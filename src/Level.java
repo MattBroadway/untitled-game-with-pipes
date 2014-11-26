@@ -89,7 +89,7 @@ public class Level
 
 			TilePos t = new TilePos(x,0);
 			// note: this is different to what is returned by getAdjacentConnections, if connectible edge faces upwards on top row: true
-			if(getTileAt(t).top) // don't add if not connected to top
+			if(getTileAt(t).top && topRow[x].bottom) // don't add if not connected to top
 			{
 				visited.add(t);
 				getTileAt(t).active = true;
@@ -207,7 +207,7 @@ public class Level
 	{
 		// in the future, could elegantly only load new required assets as specified
 		// by the level file
-		game.ss = new SpriteSheet("neater"); 
+		game.ss = new SpriteSheet("neater");
 
 		JSONObject file = new JSONObject(source);
 
@@ -238,6 +238,7 @@ public class Level
 				readBoolFrom(tileEntry, 2),
 				readBoolFrom(tileEntry, 3)
 			);
+			topRow[x].active = true;
 		}
 	}
 	private void loadPerson(String filename)
@@ -291,8 +292,11 @@ public class Level
 			// chooses appropriate default values
 			Integer fuse = candleEntry.has("fuse") ? candleEntry.getInt("fuse") : null;
 			Boolean lit = candleEntry.has("lit") ? candleEntry.getBoolean("lit") : null;
+			int col = candleEntry.getInt("col");
+			
+			int y = candleGoodZoneTop + (int)(Math.random() * (double)(candleGoodZoneBottom - candleGoodZoneTop));
 
-			candles[index] = new Candle(t, fuse, lit);
+			candles[index] = new Candle(t, fuse, lit, col, y);
 		}
 	}
 

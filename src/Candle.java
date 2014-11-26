@@ -11,6 +11,9 @@ public class Candle
 	 */
 	public int fuse;
 	public int blownFromX; // the x coordinate of the tiles that blow on this candle
+	// pixels from the top of the original cake graphic
+	// must be scaled before use
+	public int cakeY; // x is calculated, y is set and partially random and therefore stored here
 
 	public static enum Type
 	{
@@ -47,6 +50,7 @@ public class Candle
 		fuse = defaultFuse[type.id];
 		lit = defaultLit[type.id];
 		blownFromX = -1;
+		cakeY = 0;
 	}
 	
 	/**
@@ -55,16 +59,18 @@ public class Candle
 	 * @param fuse set the fuse time (null for default)
 	 * @param lit whether the candle is initially lit (null for default)
 	 */
-	public Candle(Type setType, Integer fuse, Boolean lit)
+	public Candle(Type setType, Integer setFuse, Boolean setLit, int setBlownFromX, int setCakeY)
 	{
 		type = setType;
 		
-		fuse = (fuse==null) ? defaultFuse[type.id] : fuse;
-		lit = (lit==null) ? defaultLit[type.id] : lit;
-		blownFromX = -1;
+		fuse = (setFuse==null) ? defaultFuse[type.id] : setFuse;
+		lit = (setLit==null) ? defaultLit[type.id] : setLit;
+		blownFromX = setBlownFromX;
+		cakeY = setCakeY;
 	}
 
 	
+	@Override
 	public String toString()
 	{
 		return "Candle of Type: " + type + ", Fuse: " + fuse;

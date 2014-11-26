@@ -1,4 +1,5 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
@@ -49,6 +50,8 @@ public class Renderer extends JPanel
 				r.height = height;
 				g2.setColor(Color.GREEN);
 				g2.draw(r);
+				g2.setColor(Color.ORANGE);
+				g2.drawString("(" + x + "," + y + "," + width + "," + height + ")", x+10, y + g2.getFontMetrics().getHeight());
 			}
 		}
 
@@ -71,7 +74,7 @@ public class Renderer extends JPanel
 		public Layout(Renderer setR)
 		{
 			r = setR;
-			B = 50;
+			B = 50; // can be set to any amount
 
 			GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			Dimension screenDimension = env.getMaximumWindowBounds().getSize();
@@ -82,10 +85,11 @@ public class Renderer extends JPanel
 			 Mx = screenDimension.width-insets.left-insets.right;
 
 			 // don't want to use the whole space
-			 My *= 0.95;
-			 Mx *= 0.95;
+			 My *= 0.90;
+			 Mx *= 0.90;
 
-			// will be invalid for a short time
+			// will be invalid for a short time until UpdateScale is called
+			 // but don't call it here
 		}
 
 
@@ -108,16 +112,19 @@ public class Renderer extends JPanel
 					g = gap (fixed?)
 			*/
 			BufferedImage i = r.game.lvl.person.getImage();
-			int originalPersonHeight = i.getTileHeight();
-			Pa = getAspect(i.getTileWidth(),i.getTileHeight());
+			int originalPersonHeight = i.getHeight();
+			Pa = getAspect(i.getWidth(),i.getHeight());
 			Pp = r.game.lvl.Pp; // needs to be scaled with the person
 
 			Rx = r.game.lvl.getXRes();
 			Ry = r.game.lvl.getYRes();
 
 			i = r.game.lvl.cake.getImage();
-			Ca = getAspect(i.getTileWidth(),i.getTileHeight()); // for now
-			Cg = 40; // for now. This entire variable will go
+			Ca = getAspect(i.getWidth(),i.getHeight());
+			
+			// assuming every candle has the same resolution
+			int candleHeight = r.game.ss.unlitCandles.get(Candle.Type.NORMAL).getImage().getHeight();
+			Cg = Math.round((candleHeight - r.game.lvl.candleGoodZoneTop) * 1.8); // chosen some sensible multiple
 
 
 
@@ -125,20 +132,20 @@ public class Renderer extends JPanel
 			while(true)
 			{
 				double personScale = getScaleFactor(originalPersonHeight, h - 2*B);
-				Pp = getScaled(Pp, personScale);
-				double dtileSize = (h - 2*B - Cg - Pp) / (Rx*Ca + Ry + 1);
-				double dwidth = 2*B + (Rx + 1)*dtileSize + (h / Pa);
+				Pp = Math.round(getScaled(Pp, personScale));
+				double dtileSize = Math.round((h - 2*B - Cg - Pp) / (Rx*Ca + Ry + 1));
+				double dwidth = Math.round(2*B + (Rx + 1)*dtileSize + getWidth(Pa, h-2*B));
 
 				if(dwidth > Mx)
 				{
-					h -= 1; // could make the step larger. Solutions would be non-optimal however
+					h = Math.round(h - 1); // could make the step larger. Solutions would be non-optimal however
 				}
 				else
 				{
 					// keep current tile size
 					r.tileSize = (int)Math.floor(dtileSize);
 					r.width = (int)Math.floor(dwidth);
-					r.height = (int)Math.floor(2*B + Rx*dtileSize*Ca + Cg + (Ry+1)*dtileSize + Pp);
+					r.height = (int)Math.floor((int)(2*B) + (int)getHeight(Ca, Rx*r.tileSize) + (int)Cg + (int)(Ry+1)*r.tileSize + (int)Pp);
 					break;
 				}
 			}
@@ -154,6 +161,11 @@ public class Renderer extends JPanel
 			g.x = r.width - (int)B - g.width;
 			return g;
 		}
+		public double getPersonScaleFactor()
+		{
+			Geom g = getPersonGeom();
+			return getScaleFactor((double)r.game.lvl.person.getImage().getHeight(), (double)g.height);
+		}
 
 		public Geom getCakeGeom()
 		{
@@ -164,6 +176,11 @@ public class Renderer extends JPanel
 			g.width = r.width - (int)(2*B) - r.tileSize - Pg.width;
 			g.height = r.height - (int)B - g.y;
 			return g;
+		}
+		public double getCakeScaleFactor()
+		{
+			Geom g = getCakeGeom();
+			return getScaleFactor((double)r.game.lvl.cake.getImage().getHeight(), (double)g.height);
 		}
 
 		public Geom getTileGridGeom()
@@ -185,6 +202,15 @@ public class Renderer extends JPanel
 			g.height = r.tileSize;
 			return g;
 		}
+		public Geom getBorderGeom()
+		{
+			Geom g = new Geom();
+			g.x = (int)B;
+			g.y = (int)B;
+			g.width = r.width - (int)(2*B);
+			g.height = r.height - (int)(2*B);
+			return g;
+		}
 		
 		public void debugDraw(Graphics2D g2)
 		{
@@ -192,6 +218,7 @@ public class Renderer extends JPanel
 			getCakeGeom().debugDraw(g2);
 			getTileGridGeom().debugDraw(g2);
 			getTopRowGeom().debugDraw(g2);
+			getBorderGeom().debugDraw(g2);
 		}
 
 	}
@@ -200,6 +227,9 @@ public class Renderer extends JPanel
 	 * renderers need access to the global game state to update from the logical representation
 	 */
 	private Game game;
+	
+	// whether to draw extra debug information
+	boolean debugDraw;
 
 	Layout l;
 
@@ -217,6 +247,9 @@ public class Renderer extends JPanel
 
 		this.game = game;
 		l = new Layout(this);
+		
+		// disable later
+		debugDraw = true;
 
 		setBackground(Color.WHITE);
 		setDoubleBuffered(true); // kind of redundant but it makes me happy :)
@@ -229,9 +262,11 @@ public class Renderer extends JPanel
 	
 	/** draw the scene
 	*/
+	@Override
 	public void paintComponent(Graphics g)
 	{
 		Graphics2D g2 = (Graphics2D)g;
+		long startTime = System.currentTimeMillis();
 		clearFrame(g2);
 		drawTiles(g2);
 		drawTopRow(g2);
@@ -240,9 +275,16 @@ public class Renderer extends JPanel
 		drawCandles(g2);
 		drawCursor(g2);
 		drawScore(g2);
-		l.debugDraw(g2);
+		long duration = System.currentTimeMillis() - startTime;
+		if(debugDraw)
+		{
+			g2.setColor(Color.GREEN);
+			// excludes debug drawing time, otherwise what would be the point
+			g2.drawString("frame draw time: " + duration + "ms", (int)l.B+10, (int)l.B + 2 * g2.getFontMetrics().getHeight());
+			l.debugDraw(g2);
+		}
 	}
-
+	
 	private void clearFrame(Graphics2D g2)
 	{
 		Rectangle2D.Double r = new Rectangle2D.Double(0,0,width,height);
@@ -326,11 +368,13 @@ public class Renderer extends JPanel
 	private void drawCandle(int index, Graphics2D g2)
 	{
 		Candle c = game.lvl.candles[index];
-		
 		Image i = game.ss.getCandleImage(c);
 		
-		int xpx = /*left*/ + c.blownFromX * tileSize;
-		int ypx = /*top*/ + game.lvl.getXRes() * tileSize;
+		Layout.Geom g = l.getCakeGeom();
+		double scaleFactor = l.getCakeScaleFactor();
+		
+		int xpx = g.x + (int)(((c.blownFromX + 0.5) * tileSize) - i.getImage().getWidth() / 2.0);
+		int ypx = g.y + (int)l.getScaled(c.cakeY, scaleFactor) - i.getImage().getHeight();
 
 		g2.drawImage(i.getImage(), xpx, ypx, null);
 	}

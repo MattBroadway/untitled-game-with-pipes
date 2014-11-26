@@ -14,10 +14,10 @@
 	"person" : "child1.png",
 	"cake"   : "cake.jpg",
 	"candles" : [
-		{"type":"NORMAL"},
-		{"type":"TRICK","fuse":5},
-		{"type":"TNT","fuse":15},
-		{"type":"KINDLE"},
-		{"type":"NORMAL"}
+		{"col":0,"type":"NORMAL"},
+		{"col":1,"type":"TRICK","fuse":5},
+		{"col":2,"type":"TNT","fuse":15},
+		{"col":3,"type":"KINDLE"},
+		{"col":4,"type":"NORMAL"}
 	]
 }

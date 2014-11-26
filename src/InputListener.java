@@ -100,6 +100,12 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 				
 			// case KeyEvent.VK_P: // TODO: pause
 			// case KeyEvent.VK_M: // TODO: mute
+				
+			// toggle debug rendering
+			case KeyEvent.VK_D:
+				game.w.r.debugDraw = !game.w.r.debugDraw;
+				System.out.println("debug drawing: " + (game.w.r.debugDraw ? "on" : "off"));
+				break;
 			
 			// load level
 			case KeyEvent.VK_L:
@@ -126,8 +132,8 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		Renderer.Layout.Geom tilesGeom = game.w.r.l.getTileGridGeom();
 		int tilesXRes = game.lvl.getXRes();
 
-		// floored
-		int naiveCol = (int)(((x-tilesGeom.x) / (double)tilesGeom.width)*tilesXRes);
+		// floored, towards negative infinity. (integer division is closest to zero)
+		int naiveCol = (int)Math.floor(((x-tilesGeom.x) / (double)tilesGeom.width)*tilesXRes);
 		if(naiveCol < 0 || naiveCol >= tilesXRes)
 		{
 			return -1;
@@ -145,8 +151,8 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		Renderer.Layout.Geom tilesGeom = game.w.r.l.getTileGridGeom();
 		int tilesYRes = game.lvl.getYRes();
 
-		// floored
-		int naiveRow = (int)(((y-tilesGeom.y) / (double)tilesGeom.height)*tilesYRes);
+		// floored, towards negative infinity. (integer division is closest to zero)
+		int naiveRow = (int)Math.floor(((y-tilesGeom.y) / (double)tilesGeom.height)*tilesYRes);
 		
 		if(naiveRow < 0 || naiveRow >= tilesYRes)
 		{
