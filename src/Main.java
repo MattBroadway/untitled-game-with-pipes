@@ -1,5 +1,4 @@
 // maybe this is bad, change it later if so
-import javax.swing.*;
 import java.awt.*;
 
 
