@@ -34,7 +34,7 @@ public class SpriteSheet
 
 // LOADING CODE BELOW
 	/**
-	 * name is used as the subdirectory in tilesets/ to look in
+	 * name is used as the subdirectory in tiles/ to look in
 	 */
 	public void loadByName(String name)
 	{
@@ -53,7 +53,8 @@ public class SpriteSheet
 		loadTileByName(baseDir, "straight", new boolean[]{true, false, true, false});
 		loadTileByName(baseDir, "cross", new boolean[]{true, true, true, true});
 		loadTileByName(baseDir, "T", new boolean[]{false, true, true, true});
-
+		
+		baseDir = "res/candles/";
 		loadCandle(baseDir, "normal-candle", Candle.Type.NORMAL);
 		loadCandle(baseDir, "trick-candle", Candle.Type.TRICK);
 		loadCandle(baseDir, "TNT-candle", Candle.Type.TNT);

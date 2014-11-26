@@ -17,7 +17,8 @@ public class Game
 	/** the levels of the game
 	 */
 	public final String[] levelFiles = {
-		"res/lvl/01.json"
+		"res/lvl/01.json",
+		"res/lvl/02.json"
 	};
 
 	/** initialise the game
@@ -33,7 +34,7 @@ public class Game
 	{
 		w = new MainWindow(this, "Pipes Game", 30/*FPS*/);
 		
-		loadLevel(0);
+		loadLevel(1);
 	}
 
 	/** load a level from the levelFiles attribute (zero indexed)
@@ -85,17 +86,20 @@ public class Game
 	public void setCursor(int x, int y)
 	{
 		cursorX = x;
-		if (cursorX >= lvl.getXRes()) cursorX = 0;
-		else if (cursorX < 0) cursorX = lvl.getXRes()-1;
-		
 		cursorY = y;
-		if (cursorY >= lvl.getYRes()) cursorY = 0;
-		else if (cursorY < 0) cursorY = lvl.getYRes()-1;
+		// throw exception if out of bounds
 	}
 	
-	public void moveCursor(int dy, int dx)
+	public void moveCursor(int dx, int dy)
 	{
-		setCursor(cursorY + dy, cursorX + dx);
+		cursorX += dx;
+		cursorY += dy;
+
+		if(cursorX >= lvl.getXRes()) cursorX = 0;
+		else if(cursorX < 0) cursorX = lvl.getXRes()-1;
+
+		if(cursorY >= lvl.getYRes()) cursorY = 0;
+		else if(cursorY < 0) cursorY = lvl.getYRes()-1;
 	}
 
 	public double getTimePassed()

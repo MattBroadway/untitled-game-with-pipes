@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -23,7 +24,7 @@ public class Renderer extends JPanel
 			return height / width;
 		}
 
-		class Geom
+		public class Geom
 		{
 			public int x;
 			public int y;
@@ -49,7 +50,6 @@ public class Renderer extends JPanel
 		double B;
 
 		Renderer r;
-
 
 		public Layout(Renderer setR)
 		{
@@ -92,14 +92,16 @@ public class Renderer extends JPanel
 					p = pixels (meaning various
 					g = gap (fixed?)
 			*/
-			Pa = getAspect(300,600); // for now
+			BufferedImage i = r.game.lvl.person.getImage();
+			Pa = getAspect(i.getTileWidth(),i.getTileHeight());
 			Pp = 90; // for now
 
 			Rx = r.game.lvl.getXRes();
 			Ry = r.game.lvl.getYRes();
 
-			Ca = getAspect(450,201); // for now
-			Cg = 30; // for now. This entire variable will go
+			i = r.game.lvl.cake.getImage();
+			Ca = getAspect(i.getTileWidth(),i.getTileHeight()); // for now
+			Cg = 40; // for now. This entire variable will go
 
 
 

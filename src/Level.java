@@ -84,6 +84,7 @@ public class Level
 			if(getTileAt(t).top) // don't add if not connected to top
 			{
 				visited.add(t);
+				getTileAt(t).active = true;
 				frontier.add(t);
 			}
 		}
