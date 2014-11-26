@@ -107,10 +107,11 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 				System.out.print("enter the level number to load: ");
 				int l = in.nextInt();
 				game.loadLevel(l);
+				break;
 			// reload level
 			case KeyEvent.VK_R:
 				game.loadLevel(game.currentLevel);
-				
+				break;
 		}
 	}
 	public void keyReleased(KeyEvent e) {}

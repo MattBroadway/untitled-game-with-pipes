@@ -16,13 +16,21 @@ public class Level
 		access by tiles[x][y] (zero indexed of course). (0,0) is located in the top left
 	 */
 	public Tile[][] tiles;
+	public Tile[] topRow;
 	/**
 	 * indexed by the column that they are tied with, however they have independent positioning data and are not spatially tied to these columns
 	 */
 	public Candle[] candles;
 
 	public Image person;
+	// number of pixels from the top of the person to the top of the straight pipe
+	// tile to be placed by their mouth
+	// NOTE: if anyone has a better name I'm all ears, but for now its called Pp
+	int Pp;
 	public Image cake;
+	// number of pixels from the top of the cake graphic to place candles
+	int candleGoodZoneTop;
+	int candleGoodZoneBottom;
 
 
 	public Level(Game setGame, String levelFile)
@@ -203,15 +211,46 @@ public class Level
 
 		JSONObject file = new JSONObject(source);
 
-		cake = new Image("res/cakes/"+file.getString("cake"));
-		person = new Image("res/people/"+file.getString("person"));
+		loadCake(file.getString("cake"));
+		loadPerson(file.getString("person"));
 
+		JSONArray topRowArray = file.getJSONArray("top-row");
 		JSONArray tilesArray = file.getJSONArray("tiles");
 		JSONArray candlesArray = file.getJSONArray("candles");
 
+		loadFromTopRowAttribute(topRowArray);
 		loadFromTilesAttribute(tilesArray);
 		loadFromCandlesAttribute(candlesArray);
 
+	}
+	private void loadFromTopRowAttribute(JSONArray topRowArray)
+	{
+		topRow = new Tile[topRowArray.length()];
+		for(int x = 0; x < topRow.length; x++)
+		{
+			JSONArray tileEntry = topRowArray.getJSONArray(x);
+			
+			// this isn't great for cache optimisation, but then neither is
+			// Java in general...
+			topRow[x] = new Tile(
+				readBoolFrom(tileEntry, 0),
+				readBoolFrom(tileEntry, 1),
+				readBoolFrom(tileEntry, 2),
+				readBoolFrom(tileEntry, 3)
+			);
+		}
+	}
+	private void loadPerson(String filename)
+	{
+		person = new Image("res/people/"+filename);
+		Pp = Integer.parseInt(readFileToString("res/people/"+filename+".Pp"));
+	}
+	private void loadCake(String filename)
+	{
+		cake = new Image("res/cakes/"+filename);
+		String[] boundaries = readFileToString("res/cakes/"+filename+".boundaries").split(",");
+		candleGoodZoneTop = Integer.parseInt(boundaries[0]);
+		candleGoodZoneBottom = Integer.parseInt(boundaries[1]);
 	}
 	private void loadFromTilesAttribute(JSONArray tilesAttrib)
 	{

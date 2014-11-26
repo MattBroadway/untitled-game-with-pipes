@@ -1,5 +1,7 @@
 import java.awt.*;
+
 import javax.swing.*;
+
 import java.awt.event.*;
 
 /** The main window of the game
@@ -96,7 +98,8 @@ public class MainWindow extends JFrame
 	{
 		// need to add in insets
 		setResizable(true);
-		setSize(r.width, r.height);
+		Insets insets = getInsets();
+		setSize(r.width+insets.left+insets.right, r.height+insets.top+insets.bottom);
 		setResizable(false);
 		setLocationRelativeTo(null); // centers the window on the screen
 	}

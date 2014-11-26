@@ -49,7 +49,7 @@ public class Game
 
 		lvl = new Level(this, levelFiles[level]);
 		
-		startTime = System.currentTimeMillis();	
+		startTime = System.currentTimeMillis();
 		lvl.updateAfterMove();
 
 		w.r.l.updateScale();

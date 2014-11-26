@@ -22,6 +22,14 @@ public class Renderer extends JPanel
 		{
 			return height / width;
 		}
+		public double getScaleFactor(double original, double stretched)
+		{
+			return stretched / original;
+		}
+		public double getScaled(double original, double scaleFactor)
+		{
+			return original * scaleFactor;
+		}
 
 		public class Geom
 		{
@@ -32,6 +40,16 @@ public class Renderer extends JPanel
 			public Geom() { x = 0; y = 0; width = 0; height = 0;}
 			public Geom(int setX, int setY, int setWidth, int setHeight)
 			{ x = setX; y = setY; width = setWidth; height = setHeight; }
+			public void debugDraw(Graphics2D g2)
+			{
+				Rectangle2D.Double r = new Rectangle2D.Double();
+				r.x = x;
+				r.y = y;
+				r.width = width;
+				r.height = height;
+				g2.setColor(Color.GREEN);
+				g2.draw(r);
+			}
 		}
 
 		double My;
@@ -53,7 +71,7 @@ public class Renderer extends JPanel
 		public Layout(Renderer setR)
 		{
 			r = setR;
-			B = 20;
+			B = 50;
 
 			GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			Dimension screenDimension = env.getMaximumWindowBounds().getSize();
@@ -69,8 +87,6 @@ public class Renderer extends JPanel
 
 			// will be invalid for a short time
 		}
-
-
 
 
 
@@ -92,8 +108,9 @@ public class Renderer extends JPanel
 					g = gap (fixed?)
 			*/
 			BufferedImage i = r.game.lvl.person.getImage();
+			int originalPersonHeight = i.getTileHeight();
 			Pa = getAspect(i.getTileWidth(),i.getTileHeight());
-			Pp = 90; // for now
+			Pp = r.game.lvl.Pp; // needs to be scaled with the person
 
 			Rx = r.game.lvl.getXRes();
 			Ry = r.game.lvl.getYRes();
@@ -107,6 +124,8 @@ public class Renderer extends JPanel
 			double h = My;
 			while(true)
 			{
+				double personScale = getScaleFactor(originalPersonHeight, h - 2*B);
+				Pp = getScaled(Pp, personScale);
 				double dtileSize = (h - 2*B - Cg - Pp) / (Rx*Ca + Ry + 1);
 				double dwidth = 2*B + (Rx + 1)*dtileSize + (h / Pa);
 
@@ -156,7 +175,24 @@ public class Renderer extends JPanel
 			g.height = (int)(Ry * r.tileSize);
 			return g;
 		}
-
+		
+		public Geom getTopRowGeom()
+		{
+			Geom g = new Geom();
+			g.x = (int)B;
+			g.y = (int)(B+Pp);
+			g.width = (int)((Rx +1)* r.tileSize);
+			g.height = r.tileSize;
+			return g;
+		}
+		
+		public void debugDraw(Graphics2D g2)
+		{
+			getPersonGeom().debugDraw(g2);
+			getCakeGeom().debugDraw(g2);
+			getTileGridGeom().debugDraw(g2);
+			getTopRowGeom().debugDraw(g2);
+		}
 
 	}
 
@@ -198,11 +234,13 @@ public class Renderer extends JPanel
 		Graphics2D g2 = (Graphics2D)g;
 		clearFrame(g2);
 		drawTiles(g2);
+		drawTopRow(g2);
 		drawCake(g2);
 		drawPerson(g2);
 		drawCandles(g2);
 		drawCursor(g2);
 		drawScore(g2);
+		l.debugDraw(g2);
 	}
 
 	private void clearFrame(Graphics2D g2)
@@ -223,6 +261,19 @@ public class Renderer extends JPanel
 			{
 				drawTile(x, y, tileGridGeom, g2);
 			}
+		}
+	}
+	private void drawTopRow(Graphics2D g2)
+	{
+		Layout.Geom g = l.getTopRowGeom();
+		for(int x = 0; x < game.lvl.topRow.length; x++)
+		{
+			Tile t = game.lvl.topRow[x];
+			Image i = game.ss.getTileImage(t);
+			// x in pixels
+			int xpx = g.x + x * tileSize;
+			
+			g2.drawImage(i.getImage(), xpx, g.y, tileSize, tileSize, null);
 		}
 	}
 	public void drawCake(Graphics2D g2)
@@ -276,11 +327,10 @@ public class Renderer extends JPanel
 	{
 		Candle c = game.lvl.candles[index];
 		
-		// might be an idea to cache this. It won't change often
 		Image i = game.ss.getCandleImage(c);
 		
-		int xpx = /*left*/ + c.blownFromX * 64;
-		int ypx = /*top*/ + game.lvl.getXRes() * 64;
+		int xpx = /*left*/ + c.blownFromX * tileSize;
+		int ypx = /*top*/ + game.lvl.getXRes() * tileSize;
 
 		g2.drawImage(i.getImage(), xpx, ypx, null);
 	}
