@@ -9,12 +9,13 @@
 		[0,0],
 		[0,1]
 	],
+	"person" : "child1.png",
+	"cake"   : "cake.jpg",
 	"candles" : [
 		{"type":"NORMAL"},
 		{"type":"TRICK","fuse":5},
 		{"type":"TNT","fuse":15},
 		{"type":"KINDLE"},
-		{"type":"NORMAL"},
-		{"type":"EMPTY"}
+		{"type":"NORMAL"}
 	]
 }

@@ -1,19 +1,20 @@
 import java.awt.event.*;
+
 import javax.swing.SwingUtilities;
 
 /**
  * class that listens for key events and mouse events over
  * the area of a tiles grid and adjusts the game state in response
  */
-public class TilesInputListener implements MouseListener, KeyListener
+public class InputListener implements MouseListener, KeyListener
 {
 	
 	private Game game;
 	
-	public TilesInputListener(Game game)
+	public InputListener(Game game)
 	{
 		this.game = game;
-		game.w.tiles.addMouseListener(this);
+		game.w.r.addMouseListener(this);
 		game.w.addKeyListener(this);
 	}
 	
@@ -24,12 +25,12 @@ public class TilesInputListener implements MouseListener, KeyListener
 	public void mouseClicked(MouseEvent e)
 	{
 		boolean leftClick = SwingUtilities.isLeftMouseButton(e);
-		int row = yCoordToRow(e.getY());
-		int col = xCoordToCol(e.getX());
-		if(row != -1 && col != -1)
+		int x = screenXToTileX(e.getX());
+		int y = screenYToTileY(e.getY());
+		if(x != -1 && y != -1)
 		{
-			System.out.println("tile: [row:"+row+" col:"+col+"] clicked");
-			game.setCursor(row, col);
+			System.out.println("tile: [x:"+x+" y:"+y+"] clicked");
+			game.setCursor(x, y);
 			if (leftClick) game.rotateACW();
 			else game.rotateCW();
 		}
@@ -42,7 +43,7 @@ public class TilesInputListener implements MouseListener, KeyListener
 	
 	public void keyPressed(KeyEvent e)
 	{
-		System.out.println("key pressed: " + e.getKeyText(e.getKeyCode()));
+		System.out.println("key pressed: " + KeyEvent.getKeyText(e.getKeyCode()));
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_LEFT:  game.moveCursor(0, -1); break;
@@ -69,17 +70,17 @@ public class TilesInputListener implements MouseListener, KeyListener
 	
 
 	/**
-	 * convert x coordinate (pixels) to a column in the logicalTiles object
+	 * 
 	 */
-	public int xCoordToCol(int x)
+	public int screenXToTileX(int x)
 	{
-		int left = game.w.tiles.left;
-		int width = game.w.tiles.getTileSize();
+		Renderer.Layout.Geom tilesGeom = game.w.r.l.getTileGridGeom();
+		int tilesXRes = game.lvl.getXRes();
 
-		// I know integer division floors, I'm just making it explicit
-		int naiveCol = (int)Math.floor((x-left)/(double)width);
+		// floored
+		int naiveCol = (int)(((x-tilesGeom.x) / (double)tilesGeom.width)*tilesXRes);
 		
-		if(naiveCol < 0 || naiveCol > game.tiles.getCols())
+		if(naiveCol < 0 || naiveCol > tilesXRes)
 		{
 			return -1;
 		}
@@ -89,17 +90,17 @@ public class TilesInputListener implements MouseListener, KeyListener
 		}
 	}
 	/**
-	 * convert y coordinate (pixels) to a row in the logicalTiles object
+	 * 
 	 */
-	public int yCoordToRow(int y)
+	public int screenYToTileY(int y)
 	{
-		int top = game.w.tiles.top;
-		int height = game.w.tiles.getTileSize();
+		Renderer.Layout.Geom tilesGeom = game.w.r.l.getTileGridGeom();
+		int tilesYRes = game.lvl.getYRes();
 
-		// I know integer division floors, I'm just making it explicit
-		int naiveRow = (int)Math.floor((y-top)/(double)height);
+		// floored
+		int naiveRow = (int)(((y-tilesGeom.y) / (double)tilesGeom.height)*tilesYRes);
 		
-		if(naiveRow < 0 || naiveRow > game.tiles.getRows())
+		if(naiveRow < 0 || naiveRow > tilesYRes)
 		{
 			return -1;
 		}

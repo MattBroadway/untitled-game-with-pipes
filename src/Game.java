@@ -5,12 +5,14 @@ import java.util.Arrays;
 
 public class Game
 {
-	public LogicalTiles tiles;
-	public LogicalCandles candles;
-	public TilesInputListener tilesInput;
+	public InputListener input;
 	public MainWindow w;
+	public Level lvl;
+	public SpriteSheet ss;
+
+	// RF: for input manager
 	public int cursorX=0, cursorY=0;
-	private double startTime;
+	private double startTime; // used to calculate time running
 
 	/** the levels of the game
 	 */
@@ -30,11 +32,6 @@ public class Game
 	public void start()
 	{
 		w = new MainWindow(this, "Pipes Game", 30/*FPS*/);
-		w.tiles.setPos(100, 100);
-		
-		// audio test
-		Audio audio = new Audio();
-		audio.register("intro", "res/sfx/trololo3.wav");
 		
 		loadLevel(0);
 	}
@@ -45,12 +42,14 @@ public class Game
 	{
 		long loadStart = System.currentTimeMillis();
 
-		tiles = new LogicalTiles(levelFiles[level]);
-		candles = new LogicalCandles(levelFiles[level], tiles.getCols());
-		tilesInput = new TilesInputListener(this);
-		w.tiles.refreshGeometry(); // sets the total grid size calculated from the loaded level
+		lvl = new Level(this, levelFiles[level]);
+		input = new InputListener(this);
+
 		startTime = System.currentTimeMillis();	
-		tiles.updateActiveTiles();
+		lvl.updateAfterMove();
+
+		w.r.l.updateScale();
+		w.resizeToRenderer();
 
 		long loadTime = System.currentTimeMillis() - loadStart;
 		System.out.println("level " + level + " (" + levelFiles[level] + ") loaded in " + loadTime + "ms");
@@ -60,37 +59,38 @@ public class Game
 	 */
 	public void tick()
 	{
-		boolean toBlow[] = getActiveBottomTiles();
-		
-		for (int i = 0; i < toBlow.length; i++)
+		int bottomRow = lvl.getYRes()-1;
+		for(int x = 0; x < lvl.getXRes(); x++)
 		{
-			if (toBlow[i]) {
-				candles.candles[i].blow();
+			Tile t = lvl.getTileAt(x, bottomRow);
+			if(t.active && t.bottom)
+			{
+				lvl.candles[x].blow();
 			}
 		}
 	}
 
 	public void rotateCW()
 	{
-		tiles.get(cursorY, cursorX).rotateCW();
-		tiles.updateActiveTiles();
+		lvl.getTileAt(cursorX, cursorY).rotateCW();
+		lvl.updateAfterMove();
 	}
 	
 	public void rotateACW()
 	{
-		tiles.get(cursorY, cursorX).rotateACW();
-		tiles.updateActiveTiles();
+		lvl.getTileAt(cursorX, cursorY).rotateACW();
+		lvl.updateAfterMove();
 	}
 	
-	public void setCursor(int row, int col)
+	public void setCursor(int x, int y)
 	{
-		cursorX = col;
-		if (cursorX >= tiles.getCols()) cursorX = 0;
-		else if (cursorX < 0) cursorX = tiles.getCols()-1;
+		cursorX = x;
+		if (cursorX >= lvl.getXRes()) cursorX = 0;
+		else if (cursorX < 0) cursorX = lvl.getXRes()-1;
 		
-		cursorY = row;
-		if (cursorY >= tiles.getRows()) cursorY = 0;
-		else if (cursorY < 0) cursorY = tiles.getRows()-1;
+		cursorY = y;
+		if (cursorY >= lvl.getYRes()) cursorY = 0;
+		else if (cursorY < 0) cursorY = lvl.getYRes()-1;
 	}
 	
 	public void moveCursor(int dy, int dx)
@@ -101,17 +101,5 @@ public class Game
 	public double getTimePassed()
 	{
 		return (System.currentTimeMillis() - startTime)/1000;
-	}
-	
-	public boolean[] getActiveBottomTiles()
-	{
-		boolean ret[] = new boolean[tiles.getCols()];
-		
-		for(int col = 0; col < tiles.getCols(); col++)
-		{
-			LogicalTiles.TilePos p = new LogicalTiles.TilePos(tiles.getRows()-1, col);
-			ret[col] = tiles.activeTiles.contains(p) && tiles.get(p).bottom;
-		}
-		return ret;
 	}
 }

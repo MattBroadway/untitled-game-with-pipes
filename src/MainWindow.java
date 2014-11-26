@@ -8,16 +8,13 @@ public class MainWindow extends JFrame
 {
 	/** manages the rendering of the tiles
 	*/
-	public TilesRenderer tiles;
+	public Renderer r;
 	/** manages the frame rate and general timing of the game
 	*/
 	private Scheduler sc;
 	/** stores global state about the game
 	*/
 	private Game game;
-
-	private final int scrX = 640, scrY = 480;
-
 
 	/** repaints the window based on a timer
 	*/
@@ -60,7 +57,7 @@ public class MainWindow extends JFrame
 		this.game = game;
 
 		setTitle(setTitleString);
-		setSize(scrX, scrY);
+		//setSize(640, 480); // change this to make it dynamic
 		setResizable(false);
 		setLocationRelativeTo(null); // centers the window on the screen
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,7 +68,6 @@ public class MainWindow extends JFrame
 		sc = new Scheduler(FPS, this);
 		sc.start();
 
-
 		setVisible(true);
 	}
 
@@ -79,9 +75,8 @@ public class MainWindow extends JFrame
 	*/
 	public void setupScene()
 	{
-		tiles = new TilesRenderer(game, 64/*tileSize*/);
-
-		add(tiles);
+		r = new Renderer(game);
+		add(r);
 	}
 
 	
@@ -90,9 +85,20 @@ public class MainWindow extends JFrame
 	public void tick()
 	{
 		game.tick(); // update game state
-
-		tiles.repaint();
+		r.repaint();
 		Toolkit.getDefaultToolkit().sync();
+	}
+
+	/**
+	 * make maximum use of available screen space to accommodate the renderer
+	 */
+	public void resizeToRenderer()
+	{
+		// need to add in insets
+		setResizable(true);
+		setSize(r.width, r.height);
+		setResizable(false);
+		setLocationRelativeTo(null); // centers the window on the screen
 	}
 }
 

@@ -9,12 +9,18 @@ public class Tile
 	*/
 	public boolean active;
 
-	/** initialise a tile by passing booleans
-	*/
+
 	public Tile(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft)
 	{
-		set(setTop, setRight, setBottom, setLeft);
+		set(setTop, setRight, setBottom, setLeft, false);
 	}
+	/** initialise a tile by passing booleans
+	*/
+	public Tile(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft, boolean setActive)
+	{
+		set(setTop, setRight, setBottom, setLeft, setActive);
+	}
+	public Tile(int hash) { setByHash(hash); }
 	public Tile(Tile other)
 	{
 		top = other.top;
@@ -25,14 +31,15 @@ public class Tile
 	}
 	/** set a tile by passing booleans
 	*/
-	public void set(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft)
+	public void set(boolean setTop, boolean setRight, boolean setBottom, boolean setLeft, boolean setActive)
 	{
 		top = setTop;
 		right = setRight;
 		bottom = setBottom;
 		left = setLeft;
+		active = setActive;
 	}
-	/** Use a bitmask to represent the boolean attributes
+	/** Use a bit field to represent the boolean attributes
 	 * ie.
 	 * bit 1 = top
 	 * bit 2 = right
@@ -48,9 +55,10 @@ public class Tile
 		if(right) { result += 1<<1; }
 		if(bottom) { result += 1<<2; }
 		if(left) { result += 1<<3; }
+		if(active) { result += 1<<4; }
 		return result;
 	}
-	/** set a tile by passing a bit mask ( see hashCode() )
+	/** set a tile by passing a bit field ( see hashCode() )
 	*/
 	public void setByHash(int hash)
 	{
@@ -59,6 +67,7 @@ public class Tile
 		right =	(hash & 1<<1) == 1;
 		bottom =(hash & 1<<2) == 1;
 		left =	(hash & 1<<3) == 1;
+		active =(hash & 1<<4) == 1;
 	}
 	/** test whether two tiles are logically equivalent
 	 * equivalence is determined like so:

@@ -1,26 +1,29 @@
 /**
  * this class represents a logical Candle
  */
-public class Candle {
-
+public class Candle
+{
 	public final Type type;
 	public boolean lit;
+	/**
+	 * //TODO: could someone please document your intention for this attribute
+	 * time until detonation? units?
+	 */
 	public int fuse;
+	public int blownFromX; // the x coordinate of the tiles that blow on this candle
 
 	public static enum Type
 	{
-		EMPTY(0),
-		NORMAL(1),
-		TRICK(2),
-		TNT(3),
-		KINDLE(4);
+		NORMAL(0),
+		TRICK(1),
+		TNT(2),
+		KINDLE(3);
 		
 		public final int id;
 		Type(int id) { this.id = id; }
 	}
 	public static int[] defaultFuse =
 	{
-		0, // EMPTY
 		0, // NORMAL
 		5, // TRICK
 		15,// TNT
@@ -28,7 +31,6 @@ public class Candle {
 	};
 	public static boolean[] defaultLit =
 	{
-		false, // EMPTY
 		true,  // NORMAL
 		true,  // TRICK
 		true,  // TNT
@@ -39,11 +41,12 @@ public class Candle {
 	 * Initialises a new candle, default values dependent on type
 	 * @param type see Candle.Type docs
 	 */
-	public Candle(Type type)
+	public Candle(Type setType)
 	{
-		this.type = type;
-		this.fuse = defaultFuse[type.id];
-		this.lit = defaultLit[type.id];
+		type = setType;
+		fuse = defaultFuse[type.id];
+		lit = defaultLit[type.id];
+		blownFromX = -1;
 	}
 	
 	/**
@@ -52,12 +55,13 @@ public class Candle {
 	 * @param fuse set the fuse time (null for default)
 	 * @param lit whether the candle is initially lit (null for default)
 	 */
-	public Candle(Type type, Integer fuse, Boolean lit)
+	public Candle(Type setType, Integer fuse, Boolean lit)
 	{
-		this.type = type;
+		type = setType;
 		
-		this.fuse = (fuse==null) ? defaultFuse[type.id] : fuse;
-		this.lit = (lit==null) ? defaultLit[type.id] : lit;
+		fuse = (fuse==null) ? defaultFuse[type.id] : fuse;
+		lit = (lit==null) ? defaultLit[type.id] : lit;
+		blownFromX = -1;
 	}
 
 	
