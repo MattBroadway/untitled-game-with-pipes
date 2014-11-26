@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 /** manages the logical state of the game
 */
@@ -20,12 +19,16 @@ public class Game
 		"res/lvl/01.json",
 		"res/lvl/02.json"
 	};
+	public int currentLevel;
 
 	/** initialise the game
 	 */
 	public Game()
 	{
-		
+		input = null;
+		w = null;
+		lvl = null;
+		ss = null;
 	}
 
 	/** start the game (create a window and load the first level)
@@ -33,6 +36,7 @@ public class Game
 	public void start()
 	{
 		w = new MainWindow(this, "Pipes Game", 30/*FPS*/);
+		input = new InputListener(this);
 		
 		loadLevel(1);
 	}
@@ -44,8 +48,7 @@ public class Game
 		long loadStart = System.currentTimeMillis();
 
 		lvl = new Level(this, levelFiles[level]);
-		input = new InputListener(this);
-
+		
 		startTime = System.currentTimeMillis();	
 		lvl.updateAfterMove();
 
@@ -54,6 +57,8 @@ public class Game
 
 		long loadTime = System.currentTimeMillis() - loadStart;
 		System.out.println("level " + level + " (" + levelFiles[level] + ") loaded in " + loadTime + "ms");
+		
+		currentLevel = level;
 	}
 
 	/** update the state of the game (1 unit of time has passed)
@@ -85,9 +90,11 @@ public class Game
 	
 	public void setCursor(int x, int y)
 	{
-		cursorX = x;
-		cursorY = y;
-		// throw exception if out of bounds
+		if(x != -1 && y != -1)
+		{
+			cursorX = x;
+			cursorY = y;
+		}
 	}
 	
 	public void moveCursor(int dx, int dy)

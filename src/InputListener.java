@@ -1,4 +1,5 @@
 import java.awt.event.*;
+import java.util.Scanner;
 
 import javax.swing.SwingUtilities;
 
@@ -25,6 +26,8 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 		game.w.r.addMouseMotionListener(this);
 		game.w.addKeyListener(this);
 	}
+	
+	
 	
 	/**
 	 * This event is fired when the mouse is clicked. It reports
@@ -97,6 +100,17 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 				
 			// case KeyEvent.VK_P: // TODO: pause
 			// case KeyEvent.VK_M: // TODO: mute
+			
+			// load level
+			case KeyEvent.VK_L:
+				Scanner in = new Scanner(System.in);
+				System.out.print("enter the level number to load: ");
+				int l = in.nextInt();
+				game.loadLevel(l);
+			// reload level
+			case KeyEvent.VK_R:
+				game.loadLevel(game.currentLevel);
+				
 		}
 	}
 	public void keyReleased(KeyEvent e) {}
@@ -113,7 +127,6 @@ public class InputListener implements MouseListener, MouseMotionListener, KeyLis
 
 		// floored
 		int naiveCol = (int)(((x-tilesGeom.x) / (double)tilesGeom.width)*tilesXRes);
-		
 		if(naiveCol < 0 || naiveCol >= tilesXRes)
 		{
 			return -1;
