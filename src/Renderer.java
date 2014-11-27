@@ -66,6 +66,9 @@ public class Renderer extends JPanel
 			 
 		double Ca;
 		double Cg;
+		
+		double candleScale;
+		double candleAspect;
 			 
 		double B;
 
@@ -74,7 +77,7 @@ public class Renderer extends JPanel
 		public Layout(Renderer setR)
 		{
 			r = setR;
-			B = 50; // can be set to any amount
+			B = 10; // can be set to any amount
 
 			GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			Dimension screenDimension = env.getMaximumWindowBounds().getSize();
@@ -120,11 +123,16 @@ public class Renderer extends JPanel
 			Ry = r.game.lvl.getYRes();
 
 			i = r.game.lvl.cake.getImage();
-			Ca = getAspect(i.getWidth(),i.getHeight());
+			Ca = getAspect(i.getWidth(), i.getHeight());
 			
 			// assuming every candle has the same resolution
-			int candleHeight = r.game.ss.unlitCandles.get(Candle.Type.NORMAL).getImage().getHeight();
-			Cg = Math.round((candleHeight - r.game.lvl.candleGoodZoneTop) * 1.8); // chosen some sensible multiple
+			// this keeps the scale of the candles locked to the scale of the cake
+			// candle height = candleScale * tileSize
+			double initialTileSize = (double)r.game.ss.tiles.get(new Tile(true, true, true, true)).getImage().getHeight();
+			i = r.game.ss.unlitCandles.get(Candle.Type.NORMAL).getImage();
+			candleScale = (double)i.getHeight() / initialTileSize;
+			candleAspect = getAspect(i.getWidth(), i.getHeight());
+			Cg = Math.round((initialTileSize * candleScale - r.game.lvl.candleGoodZoneTop) * 1.8); // chosen some sensible multiple
 
 
 
@@ -181,6 +189,10 @@ public class Renderer extends JPanel
 		{
 			Geom g = getCakeGeom();
 			return getScaleFactor((double)r.game.lvl.cake.getImage().getHeight(), (double)g.height);
+		}
+		public int getCandleHeight()
+		{
+			return (int)(r.tileSize * candleScale);
 		}
 
 		public Geom getTileGridGeom()
@@ -373,9 +385,13 @@ public class Renderer extends JPanel
 		Layout.Geom g = l.getCakeGeom();
 		double scaleFactor = l.getCakeScaleFactor();
 		
-		int xpx = g.x + (int)(((c.blownFromX + 0.5) * tileSize) - i.getImage().getWidth() / 2.0);
-		int ypx = g.y + (int)l.getScaled(c.cakeY, scaleFactor) - i.getImage().getHeight();
+		int h = (int)l.getCandleHeight();
+		int w = (int)l.getWidth(l.candleAspect, h);
+		
+		int xpx = g.x + (int)(((c.blownFromX + 0.5) * tileSize) - w / 2.0);
+		int ypx = g.y + (int)l.getScaled(c.cakeY, scaleFactor) - h;
+		
 
-		g2.drawImage(i.getImage(), xpx, ypx, null);
+		g2.drawImage(i.getImage(), xpx, ypx, w, h, null);
 	}
 }
